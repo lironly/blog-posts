@@ -1,0 +1,8 @@
+version: '2.1'
+
+services:
+  dotnetframework:
+    image: dotnetframework
+    build:
+      context: .\DotNetFramework
+      dockerfile: Dockerfile
