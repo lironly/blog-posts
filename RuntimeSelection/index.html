@@ -1,0 +1,88 @@
+﻿<div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-a2vT93sPrfM/Whwa9aGaOsI/AAAAAAAACyQ/hIKmESCvX70FhLRHzbL7eEXrmrlm1_nCwCLcBGAs/s1600/BlogLogo.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-a2vT93sPrfM/Whwa9aGaOsI/AAAAAAAACyQ/hIKmESCvX70FhLRHzbL7eEXrmrlm1_nCwCLcBGAs/s1600/BlogLogo.png" data-original-width="824" data-original-height="460" /></a></div>
+<a href="https://github.com/allanchua101/Blog/tree/master/RuntimeSelection">Download Demo Apps from GITHUB</a>
+<p>
+    The objective of this blog post is to explain the factors that should be considered when picking a framework for a .net application that you intend to deploy in a containerized fashion.
+</p>
+<!-- .Net Core -->
+<h2 style="margin-top: 12px">.Net Core</h2>
+<p>
+    Generally, .Net Core is the preferred option when building applications that were intended to be deployed in containers. This is due to the fact that .Net Core is built using the modular architecture (.net core apps images contains the dependencies required for it to run), therefore producing lighter images (end product of building containerized application).
+</p>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-lGxJBdtB3Kc/Whwej7zQ75I/AAAAAAAACyc/T8vqJSKKU0YquHXgVjZcENYMUd1zZPF6ACPcBGAYYCw/s1600/DotNetCore.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-lGxJBdtB3Kc/Whwej7zQ75I/AAAAAAAACyc/T8vqJSKKU0YquHXgVjZcENYMUd1zZPF6ACPcBGAYYCw/s1600/DotNetCore.png" data-original-width="979" data-original-height="512" /></a></div>
+<p style="text-align: center;">
+    <i>
+        On the image above, you will see an image built for .Net Core app that prompts "Hello World". Please take note of the size of the image (251 MB) as it would be critical to demonstrating the difference of the two frameworks.
+    </i>
+</p>
+<h3 style="font-size: 20px;">When to pick .NET Core?</h3>
+<ul style="list-style: none;">
+    <li>
+        <h4 style="font-style:italic; font-size: 16px;">Building Polyglots</h4>
+        <p style="font-size: 14px;">
+            Polyglots are applications built using different platforms (EG. Combination of Java and .Net apps in a SOA app). Basically, .Net Core can be used to build applications that run on both Linux and Windows.
+        </p>
+    </li>
+    <li>
+        <h4 style="font-style:italic; font-size: 16px;">Your application's architecture is Microservices</h4>
+        <p style="font-size: 14px;">
+            Containers are perfect for deploying Microservices because they allow the complete isolation of services. This basically enables the use of different
+            platforms and dependencies per service without the nasty side-effects of hosting this applications together.
+        </p>
+    </li>
+    <li>
+        <h4 style="font-style:italic; font-size: 16px;">You intend to save on hardware cost</h4>
+        <p style="font-size: 14px;">
+            Images built using .NET Core have small footprints (RAM and Storage) which enables us to host different containers inside a VM or Physical machine. 
+        </p>
+    </li>
+    <li>
+        <h4 style="font-style:italic; font-size: 16px;">You need fast app start up</h4>
+        <p style="font-size: 14px;">
+            Since .NET core apps only ship with things it depends on, application can quickly startup.
+        </p>
+    </li>
+    <li>
+        <h4 style="font-style:italic; font-size: 16px;">You intend to build Green-Field applications</h4>
+        <p style="font-size: 14px;">
+            .NET core is the most advised framework to be used for building green-field applications (Fresh Projects). Since it is designed for the future of .NET development.
+        </p>
+    </li>
+    <li>
+        <h4 style="font-style:italic; font-size: 16px;">You intend to built high density and scalable applications.</h4>
+        <p style="font-size: 14px;">
+            Since containerized applications are easy to scale using container orchestrators like Docker Swarm, Kubernetes, DC OS and Mesosphere; .NET core is the perfect framework 
+        </p>
+    </li>
+</ul>
+<!-- .Net Framework -->
+<h2 style="margin-top: 12px">.Net Framework</h2>
+<p>
+    .Net Framework is the preferred option when you intend to containerize an existing application or utilize things that deeply depend on Windows API. It is always advised to pick .NET Core over .NET framework because of the Huge image that .NET framework images produces. NOTE: Huge image size corresponds to higher cost of hosting in cloud based docker image repositories. It also means larger cost for compute power to run the containerized app.
+</p>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-uRqXDxFToXM/WhwkfN6QKhI/AAAAAAAACys/npHiVEZfy1YOkpY2pr3u6dPG42OGNMlnQCLcBGAs/s1600/DotNetFramework.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-uRqXDxFToXM/WhwkfN6QKhI/AAAAAAAACys/npHiVEZfy1YOkpY2pr3u6dPG42OGNMlnQCLcBGAs/s1600/DotNetFramework.png" data-original-width="979" data-original-height="511" /></a></div>
+<p style="text-align: center;">
+    <i>
+        On the image above, you will see an image built for .Net Core app that prompts "Hello World". It is quite noticeable that this image is way larger (10.4GB) than the image built using .Net Core.
+    </i>
+</p>
+<h3 style="font-size: 20px;">When to pick .NET Framework over .Net Core?</h3>
+<ul style="list-style: none;">
+    <li>
+        <h4 style="font-style:italic; font-size: 16px;">Migrate an application that is difficult to port in .Net Core</h4>
+        <p style="font-size: 14px;">
+            If migrating an application from .NET Framework to .Net Core is associated with high risk over produced value, it is highly suggested to keep the existing app and host it on containers.
+        </p>
+    </li>
+    <li>
+        <h4 style="font-style:italic; font-size: 16px;">Your application depends on a binary that doesn't have a .Net Core counterpart.</h4>
+        <p style="font-size: 14px;">
+            Since .NET Core is still young and hot, there are still binaries that don't have a .NET core counterpart. A perfect example of this is proprietary or internal frameworks of companies.
+        </p>
+    </li>
+    <li>
+        <h4 style="font-style:italic; font-size: 16px;">Usage of .Net technologies not available for .Net Core</h4>
+        <p style="font-size: 14px;">
+            As of November 2017, ASP.net Web Forms, WCF services and Workflow related services are still not supported.
+        </p>
+    </li>
+</ul>
