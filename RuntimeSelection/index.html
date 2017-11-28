@@ -1,12 +1,11 @@
-﻿<div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-a2vT93sPrfM/Whwa9aGaOsI/AAAAAAAACyQ/hIKmESCvX70FhLRHzbL7eEXrmrlm1_nCwCLcBGAs/s1600/BlogLogo.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-a2vT93sPrfM/Whwa9aGaOsI/AAAAAAAACyQ/hIKmESCvX70FhLRHzbL7eEXrmrlm1_nCwCLcBGAs/s1600/BlogLogo.png" data-original-width="824" data-original-height="460" /></a></div>
-<a href="https://github.com/allanchua101/Blog/tree/master/RuntimeSelection">Download Demo Apps from GITHUB</a>
+﻿<div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-gVmyPRxWigo/Whw2KyKYi5I/AAAAAAAACzQ/mMdsOK14JngKJ8J7o4hrdydcH3wWccgIgCPcBGAYYCw/s1600/BlogLogo.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-gVmyPRxWigo/Whw2KyKYi5I/AAAAAAAACzQ/mMdsOK14JngKJ8J7o4hrdydcH3wWccgIgCPcBGAYYCw/s1600/BlogLogo.png" data-original-width="824" data-original-height="460" /></a></div>
 <p>
-    The objective of this blog post is to explain the factors that should be considered when picking a framework for a .net application that you intend to deploy in a containerized fashion.
+    The objective of this blog post is to explain the factors that should be considered when picking a framework for a .net application that you intend to deploy in containerized fashion.
 </p>
 <!-- .Net Core -->
 <h2 style="margin-top: 12px">.Net Core</h2>
 <p>
-    Generally, .Net Core is the preferred option when building applications that were intended to be deployed in containers. This is due to the fact that .Net Core is built using the modular architecture (.net core apps images contains the dependencies required for it to run), therefore producing lighter images (end product of building containerized application).
+    Generally, .Net Core is the preferred option when building applications that were intended to be deployed in containers due to the fact that .Net Core is built using modular architecture (.net core app images contains only the dependencies it requires to run). .NET Core apps are packaged using Windows Nano Server which is a far smaller compared to the OS required by the standard .NET runtime (Windows Server Core) therefore producing lighter images (end product of building containerized application).
 </p>
 <div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-lGxJBdtB3Kc/Whwej7zQ75I/AAAAAAAACyc/T8vqJSKKU0YquHXgVjZcENYMUd1zZPF6ACPcBGAYYCw/s1600/DotNetCore.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-lGxJBdtB3Kc/Whwej7zQ75I/AAAAAAAACyc/T8vqJSKKU0YquHXgVjZcENYMUd1zZPF6ACPcBGAYYCw/s1600/DotNetCore.png" data-original-width="979" data-original-height="512" /></a></div>
 <p style="text-align: center;">
@@ -14,12 +13,13 @@
         On the image above, you will see an image built for .Net Core app that prompts "Hello World". Please take note of the size of the image (251 MB) as it would be critical to demonstrating the difference of the two frameworks.
     </i>
 </p>
+<a href="https://github.com/allanchua101/Blog/tree/master/RuntimeSelection">Download Demo Apps from GITHUB</a>
 <h3 style="font-size: 20px;">When to pick .NET Core?</h3>
 <ul style="list-style: none;">
     <li>
         <h4 style="font-style:italic; font-size: 16px;">Building Polyglots</h4>
         <p style="font-size: 14px;">
-            Polyglots are applications built using different platforms (EG. Combination of Java and .Net apps in a SOA app). Basically, .Net Core can be used to build applications that run on both Linux and Windows.
+            Polyglots are applications built using different platforms (EG. Combination of Java and .Net processes in a SOA app). Basically, .Net Core can be used to build applications that run on both Linux and Windows.
         </p>
     </li>
     <li>
@@ -32,13 +32,13 @@
     <li>
         <h4 style="font-style:italic; font-size: 16px;">You intend to save on hardware cost</h4>
         <p style="font-size: 14px;">
-            Images built using .NET Core have small footprints (RAM and Storage) which enables us to host different containers inside a VM or Physical machine. 
+            Images built using .NET Core have small footprints (RAM and Storage) which enables us to host different containers inside a VM or Physical machine.
         </p>
     </li>
     <li>
         <h4 style="font-style:italic; font-size: 16px;">You need fast app start up</h4>
         <p style="font-size: 14px;">
-            Since .NET core apps only ship with things it depends on, application can quickly startup.
+            Since .NET Core apps ship with things it only depends on, application can quickly startup.
         </p>
     </li>
     <li>
@@ -48,9 +48,9 @@
         </p>
     </li>
     <li>
-        <h4 style="font-style:italic; font-size: 16px;">You intend to built high density and scalable applications.</h4>
+        <h4 style="font-style:italic; font-size: 16px;">You intend to build high density and scalable applications.</h4>
         <p style="font-size: 14px;">
-            Since containerized applications are easy to scale using container orchestrators like Docker Swarm, Kubernetes, DC OS and Mesosphere; .NET core is the perfect framework 
+            Since containerized applications are easy to scale using container orchestrators like Docker Swarm, Kubernetes, DC OS and Mesosphere; .NET core is the perfect framework
         </p>
     </li>
 </ul>
@@ -62,7 +62,7 @@
 <div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-uRqXDxFToXM/WhwkfN6QKhI/AAAAAAAACys/npHiVEZfy1YOkpY2pr3u6dPG42OGNMlnQCLcBGAs/s1600/DotNetFramework.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-uRqXDxFToXM/WhwkfN6QKhI/AAAAAAAACys/npHiVEZfy1YOkpY2pr3u6dPG42OGNMlnQCLcBGAs/s1600/DotNetFramework.png" data-original-width="979" data-original-height="511" /></a></div>
 <p style="text-align: center;">
     <i>
-        On the image above, you will see an image built for .Net Core app that prompts "Hello World". It is quite noticeable that this image is way larger (10.4GB) than the image built using .Net Core.
+        On the image above, you will see an image built for .Net Framework app that prompts "Hello World". It is quite noticeable that this image is way larger (10.4GB) than the image built using .Net Core.
     </i>
 </p>
 <h3 style="font-size: 20px;">When to pick .NET Framework over .Net Core?</h3>
