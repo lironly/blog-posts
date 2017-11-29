@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.17
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrmPerfComparer", "OrmPerfComparer\OrmPerfComparer.csproj", "{E744EBEC-5FB8-4DEC-8F94-8EB632D53C27}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentations", "Presentations", "{95AC2FEF-110C-4CDA-A39B-4A4D3BF23880}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Databases", "Databases", "{3210568D-721E-45EE-82DD-C55ACEEC4CC5}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "OrmPerfComparer.DB", "OrmPerfComparer.DB\OrmPerfComparer.DB.sqlproj", "{65E9BEE9-4CB4-409D-97C2-4AE14E09A38F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E744EBEC-5FB8-4DEC-8F94-8EB632D53C27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E744EBEC-5FB8-4DEC-8F94-8EB632D53C27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E744EBEC-5FB8-4DEC-8F94-8EB632D53C27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E744EBEC-5FB8-4DEC-8F94-8EB632D53C27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65E9BEE9-4CB4-409D-97C2-4AE14E09A38F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65E9BEE9-4CB4-409D-97C2-4AE14E09A38F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65E9BEE9-4CB4-409D-97C2-4AE14E09A38F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{65E9BEE9-4CB4-409D-97C2-4AE14E09A38F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65E9BEE9-4CB4-409D-97C2-4AE14E09A38F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65E9BEE9-4CB4-409D-97C2-4AE14E09A38F}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E744EBEC-5FB8-4DEC-8F94-8EB632D53C27} = {95AC2FEF-110C-4CDA-A39B-4A4D3BF23880}
+		{65E9BEE9-4CB4-409D-97C2-4AE14E09A38F} = {3210568D-721E-45EE-82DD-C55ACEEC4CC5}
+	EndGlobalSection
+EndGlobal

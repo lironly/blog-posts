@@ -1,0 +1,6 @@
+﻿CREATE TABLE [Media].[Video]
+(
+	 [VideoId]		UNIQUEIDENTIFIER NOT NULL
+	,[VideoName]	NVARCHAR(128)	 NOT NULL
+	,CONSTRAINT [PK_Media_Video] PRIMARY KEY ([VideoId])
+)
