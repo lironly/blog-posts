@@ -13,9 +13,9 @@
     as code smell due to the fact that they prevent readers from interpreting their purpose.
 </p>
 <p>
-    Writing software in this approach makes life easy for the original authors since they understand the purpose of the values. In contrast, Magic numbers are notorious
-    for making developer lives very painful and sober. Magic values start to evolve to a very costly problem (I believe this code smell is a million dollar problem today)
-    as time passes by because:
+    Writing software in this approach makes life easy for the original authors since they understand the purpose of the values. In contrast, magic numbers are notorious
+    for punishing developers that would maintain the code. Developers have to spend time figuring out the purpose and story behind the numbers.
+    Magic values start to evolve to a very costly problem (Next to the null reference exception, I believe this code smell is another million dollar problem today) as time passes by because:
     <ul>
         <li>Original authors may leave the company.</li>
         <li>Original authors may work on different projects and end up forgetting the purpose of the values.</li>
