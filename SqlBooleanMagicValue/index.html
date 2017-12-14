@@ -1,0 +1,43 @@
+﻿<div class="separator" style="clear: both; text-align: center;"><a href="https://2.bp.blogspot.com/-GPGwT0GJvR4/WjKKPf0FN3I/AAAAAAAACz4/lOT6A0A0x0EeIdBg6GaJmiXC7FwcJYIPgCLcBGAs/s1600/SqlBestPractices.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://2.bp.blogspot.com/-GPGwT0GJvR4/WjKKPf0FN3I/AAAAAAAACz4/lOT6A0A0x0EeIdBg6GaJmiXC7FwcJYIPgCLcBGAs/s640/SqlBestPractices.png" width="640" height="357" data-original-width="824" data-original-height="460" /></a></div>
+<p>
+    <a href="http://wiki.c2.com/?MagicNumber">Magic values</a> or magic constants are literal values that are used in code without clear definition of
+    their meaning or purpose (Hence the name <span style="font-style: italic;">magic</span> constants). These literals are considered as code smell as
+    they degrade the maintainability of a software by making business rules related to constant values unreadable. Consider the sample below:
+</p>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://2.bp.blogspot.com/-7yppgrQ2Nbg/WjKOZIUCrXI/AAAAAAAAC0U/DcDVAz-xLzIKiQ5PzZRPzqG9qTQoYp2hACLcBGAs/s1600/Bad%2BSample.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://2.bp.blogspot.com/-7yppgrQ2Nbg/WjKOZIUCrXI/AAAAAAAAC0U/DcDVAz-xLzIKiQ5PzZRPzqG9qTQoYp2hACLcBGAs/s1600/Bad%2BSample.png" data-original-width="620" data-original-height="435" /></a></div>
+<p style="font-style: italic; text-align: center;">
+    FIGURE 1: The literals .30 and 125 are considered magic values.
+</p>
+<p>
+    In Figure 1, you would notice that the literal values .30 and 125 are used. These literal values are a good sample of magic numbers which are considered
+    as code smell due to the fact that they prevent readers from interpreting their purpose.
+</p>
+<p>
+    Writing software in this approach makes life easy for the original authors since they understand the purpose of the values. In contrast, Magic numbers are notorious
+    for making developer lives very painful and sober. Magic values start to evolve to a very costly problem (I believe this code smell is a million dollar problem today)
+    as time passes by because:
+    <ul>
+        <li>Original authors may leave the company.</li>
+        <li>Original authors may work on different projects and end up forgetting the purpose of the values.</li>
+        <li>Source code might be maintained by other team members (Surprise for you Kiddos :D).</li>
+    </ul>
+</p>
+<h2>Solution: Busting the f*cking magic values.</h2>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-b5awaLUh518/WjKS8kid-WI/AAAAAAAAC0k/1jOOqsodpb0DU6z-4b-Hnj6eJDg4crSAwCLcBGAs/s1600/Good%2BCode%2BSample.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-b5awaLUh518/WjKS8kid-WI/AAAAAAAAC0k/1jOOqsodpb0DU6z-4b-Hnj6eJDg4crSAwCLcBGAs/s1600/Good%2BCode%2BSample.png" data-original-width="677" data-original-height="479" /></a></div>
+<p style="font-style: italic; text-align: center;">
+    FIGURE 2: The literals .30 and 125 are now placed on self documenting constant values.
+</p>
+<p>
+    In Figure 2, the magic values were extracted out of the original method and defined using self documenting constant variables. Following this approach helps in improving
+    the maintainability of the code in the following ways:
+    <ul>
+        <li>The purpose of the values are now identifiable.</li>
+        <li>The values can now be re-used in future methods that would be written.</li>
+        <li>Applying changes for magic values used in different sections is easier.</li>
+    </ul>
+</p>
+<h2>Conclusion</h2>
+<p>
+    The existence of the magic values introduces maintainability problems and should therefore be avoided at all means through
+    the use of self documenting variables.
+</p>
