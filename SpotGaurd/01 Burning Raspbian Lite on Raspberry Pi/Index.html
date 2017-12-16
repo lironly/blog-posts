@@ -1,0 +1,59 @@
+﻿<div class="separator" style="clear: both; text-align: center;"><a href="https://2.bp.blogspot.com/-Ul7jqucAI7w/WjU18A5plXI/AAAAAAAAC1I/feyP22Hg9AQukLsgIdS7Rj2CPoQdPnv-gCPcBGAYYCw/s1600/Raspbian%2BLite%2Bon%2BRaspberry%2BPie.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://2.bp.blogspot.com/-Ul7jqucAI7w/WjU18A5plXI/AAAAAAAAC1I/feyP22Hg9AQukLsgIdS7Rj2CPoQdPnv-gCPcBGAYYCw/s1600/Raspbian%2BLite%2Bon%2BRaspberry%2BPie.png" data-original-width="824" data-original-height="460" /></a></div>
+<p style="text-align: center;">
+    <i>
+        This is the pilot post for building a Raspberry Pi cluster that I intend to use for building a Nextflix replica at home for research purposes, the goal of the post is to install a Raspbian Jesse Lite
+        on a Micro SD card that I plan to install on a Raspberry Pi.
+    </i>
+</p>
+<p>
+    Most stores nowadays would sell Raspberry PIs that have pre-installed SD Cards and OS (Most of the time outdated). This is definitely OK and convenient but it is prone to two major problems:
+    <ul>
+        <li>Guys who buy Raspberry PIs with pre-installed SD cards and OS don't understand how to install things on their own.</li>
+        <li>The pre-installed OS is often outdated from what is available from the internet.</li>
+    </ul>
+</p>
+<h2>Stuff you need</h2>
+<p>
+    <ul>
+        <li>An SD card with at least 48 MB/s transfer speed. For me I've used a <a href="http://www.samsung.com/sg/memory-storage/micro-sdhc-with-adapter/MB-MP32DAAPC/">Samsung micro SDHC™ UHS-1 Card</a> because faster cards are better!</li>
+        <li>An image of <a href="https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2017-07-05/">Raspbian Jesse Lite</a>.</li>
+        <li><a href="https://etcher.io">Etcher</a> (An SD Card Burner). It's an open source software that leads the competition!</li>
+    </ul>
+</p>
+<h2>Start like a boss</h2>
+<ul style="list-style: none;">
+    <li>
+        <h3 style="font-style: italic;">Step 1: Install Etcher on your machine.</h3>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-qJMrEPD0Za4/WjU8QMK9niI/AAAAAAAAC1Y/R_zrbpO8f00uKlI3MwV4h5FeItn_qLkJACLcBGAs/s1600/01%2BInstall%2BEtcher.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-qJMrEPD0Za4/WjU8QMK9niI/AAAAAAAAC1Y/R_zrbpO8f00uKlI3MwV4h5FeItn_qLkJACLcBGAs/s1600/01%2BInstall%2BEtcher.png" data-original-width="499" data-original-height="388" /></a></div>
+        <p style="text-align: center;">
+            <i>
+                Download and install Etcher from <a href="https://etcher.io">https://etcher.io</a>.
+            </i>
+        </p>
+    </li>
+    <li>
+        <h3 style="font-style: italic;">Step 2: Open Etcher</h3>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://2.bp.blogspot.com/-0h42Ckbjv0E/WjU_S-lQShI/AAAAAAAAC1k/HaNkr21VZCYfsT0z1jcdNYx7shA-y006ACLcBGAs/s1600/02%2BOpen%2BEtcher.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://2.bp.blogspot.com/-0h42Ckbjv0E/WjU_S-lQShI/AAAAAAAAC1k/HaNkr21VZCYfsT0z1jcdNYx7shA-y006ACLcBGAs/s1600/02%2BOpen%2BEtcher.png" data-original-width="802" data-original-height="407" /></a></div>
+    </li>
+    <li>
+        <h3 style="font-style: italic;">Step 3: Select the Raspberry Image file from your drive.</h3>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-2YCEjy13VCc/WjVAe-_ysAI/AAAAAAAAC1w/nJEASiDwwNMjGZvXXjhHCc8PrujWn5q0ACLcBGAs/s1600/03%2BSelect%2BImage.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-2YCEjy13VCc/WjVAe-_ysAI/AAAAAAAAC1w/nJEASiDwwNMjGZvXXjhHCc8PrujWn5q0ACLcBGAs/s1600/03%2BSelect%2BImage.png" data-original-width="784" data-original-height="70" /></a></div>
+    </li>
+    <li>
+        <h3>Step 4: Flash your SD card.</h3>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-wyCWFK0Hk8c/WjVA211cF7I/AAAAAAAAC14/BGOWVbDi5uc2EiU6hhrFlhph0mUXdUWFQCPcBGAYYCw/s1600/04%2BFlash%2Byour%2Bimage.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-wyCWFK0Hk8c/WjVA211cF7I/AAAAAAAAC14/BGOWVbDi5uc2EiU6hhrFlhph0mUXdUWFQCPcBGAYYCw/s1600/04%2BFlash%2Byour%2Bimage.png" data-original-width="802" data-original-height="407" /></a></div>
+    </li>
+    <li>
+        <h3>Step 5: Wait for it to finish.</h3>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-7BPPmJB8q-Q/WjVA5uulV7I/AAAAAAAAC18/o-SeTiXZ7CMsFPz3IA5f8gJRDRYr9cD7ACPcBGAYYCw/s1600/05%2BWait%2Bfor%2Bit%2Bto%2Bfinish.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-7BPPmJB8q-Q/WjVA5uulV7I/AAAAAAAAC18/o-SeTiXZ7CMsFPz3IA5f8gJRDRYr9cD7ACPcBGAYYCw/s1600/05%2BWait%2Bfor%2Bit%2Bto%2Bfinish.png" data-original-width="802" data-original-height="407" /></a></div>
+    </li>
+    <li>
+        <h3>Step 6: Task Complete.</h3>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-ERbl5RzIBq8/WjVBJLTFHJI/AAAAAAAAC2E/dQhl-wGZNLEFk9SSEHlYbLLzaOuQJBhagCLcBGAs/s1600/06%2BTask%2BComplete.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-ERbl5RzIBq8/WjVBJLTFHJI/AAAAAAAAC2E/dQhl-wGZNLEFk9SSEHlYbLLzaOuQJBhagCLcBGAs/s1600/06%2BTask%2BComplete.png" data-original-width="802" data-original-height="407" /></a></div>
+    </li>
+</ul>
+<h2>Conclusion</h2>
+<p>
+    Installing <a href="https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2017-07-05/">Raspbian Jesse Lite</a>. in a SD card is quite manageable and should not 
+    discourage people from buying Raspberry PIs that don't have pre-installed OS and SD card. Installing it on your own lets you save money and offers you the learning opportunity.
+</p>
