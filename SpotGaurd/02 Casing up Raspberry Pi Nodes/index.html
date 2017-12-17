@@ -1,0 +1,120 @@
+﻿<div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-DQymvZHJfaI/WjalAHbGwhI/AAAAAAAAC4o/jF2-s_fwjUAmm2S6EW3_fagEqv937ZwIQCLcBGAs/s1600/IMG_2146.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-DQymvZHJfaI/WjalAHbGwhI/AAAAAAAAC4o/jF2-s_fwjUAmm2S6EW3_fagEqv937ZwIQCLcBGAs/s1600/IMG_2146.JPG" data-original-width="1600" data-original-height="1200" /></a></div>
+<p style="text-align: center;">
+    <i>
+        This post is a continuation of my Replicating Netflix series. <a href="https://pogsdotnet.blogspot.sg/2017/12/replicating-nextflix-part-1-installing.html">Yesterday</a>, We have learned how to burn
+        some <a href="https://www.raspberrypi.org/downloads/raspbian/">Raspbian Jessie Lite</a> instances on Samsung Micro SHDC UHS1 SD cards. Today we will integrate the Jessie SD cards to our Raspberry
+        PIs and pimp them up with some cheap cases while waiting for our <a href="https://sg-live-02.slatic.net/p/2/clear-acrylic-cluster-case-5-layer-shelf-stack-for-raspberry-pi-32-b-and-b-intl-1508846616-58338496-edf9e263ed50556d74985ace5586aae4-zoom.jpg">clear acrylic cluster case.</a>
+    </i>
+</p>
+<h2>Why Raspberry PIs for your cluster?</h2>
+<p>
+    I have picked Raspberry PIs for clustering because:
+    <ul>
+        <li>The power and compute they provide fit container based architectures.</li>
+        <li>They are very cheap cores that is worth investing.</li>
+        <li>They are extremely portable. I am currently based in Singapore and moving houses every once in a while is quite normal for everyone.</li>
+    </ul>
+</p>
+<h2>Whats Needed</h2>
+<ul style="list-style: none;">
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-HiqfuxEtTmk/WjaZ-tKQDrI/AAAAAAAAC20/yQawF0v9N7Qy53kf-MLS6cIqpQdA95emQCLcBGAs/s1600/IMG_2127.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-HiqfuxEtTmk/WjaZ-tKQDrI/AAAAAAAAC20/yQawF0v9N7Qy53kf-MLS6cIqpQdA95emQCLcBGAs/s320/IMG_2127.JPG" width="240" height="320" data-original-width="1200" data-original-height="1600" /></a></div>
+        <h3 style="font-style: italic;">4 pieces of Raspberry PI 3</h3>
+        <p>
+            <i>
+                I am planning to scale it out to 6 clusters if the need arises. It would cost around 50 SGD at the time of writing (December 18, 2017)
+            </i>
+        </p>
+    </li>
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-pYYXE0wQ3Dk/WjaaTBFJNkI/AAAAAAAAC24/_2KDdm3zPd0obRMs_qgaclE10_h9M42nwCLcBGAs/s1600/IMG_2129.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-pYYXE0wQ3Dk/WjaaTBFJNkI/AAAAAAAAC24/_2KDdm3zPd0obRMs_qgaclE10_h9M42nwCLcBGAs/s320/IMG_2129.JPG" width="320" height="240" data-original-width="1600" data-original-height="1200" /></a></div>
+        <h3 style="font-style: italic;">4 SD cards with Raspbian Jessie Lite burned on them.</h3>
+        <p>
+            <i>
+                I picked the GUI less variant of the Jessie OS to maximize the performance that we can squeeze out of this tiny bad-ass nodes. (LOL)
+            </i>
+        </p>
+    </li>
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://2.bp.blogspot.com/-SlUCxqH48ys/Wjaa7vfm6tI/AAAAAAAAC3E/AogPvoDyprAX9K70FDOxLhOuBMtFuD7JwCLcBGAs/s1600/IMG_2133.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://2.bp.blogspot.com/-SlUCxqH48ys/Wjaa7vfm6tI/AAAAAAAAC3E/AogPvoDyprAX9K70FDOxLhOuBMtFuD7JwCLcBGAs/s320/IMG_2133.JPG" width="320" height="240" data-original-width="1600" data-original-height="1200" /></a></div>
+        <h3 style="font-style: italic;">3 pieces of Raspberry PI 3 crystal clear case.</h3>
+        <p>
+            <i>
+                This cases would be used for Pogs slave/worker nodes.
+            </i>
+        </p>
+    </li>
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-Df0ers3aTmk/WjacCngBWhI/AAAAAAAAC3Q/vacEsFBvxNMhIGjYBgpYTora1455wywZgCLcBGAs/s1600/black%2Bcase.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-Df0ers3aTmk/WjacCngBWhI/AAAAAAAAC3Q/vacEsFBvxNMhIGjYBgpYTora1455wywZgCLcBGAs/s200/black%2Bcase.jpg" width="200" height="150" data-original-width="1600" data-original-height="1200" /></a></div>
+        <h3 style="font-style: italic;">1 Raspberry PI 3 black case.</h3>
+        <p>
+            <i>
+                I only bought a single black case so that I can easily distinguish the Pogs MASTER/BOSS/IDOL/GOD node. (LOL)
+            </i>
+        </p>
+    </li>
+</ul>
+<h2>Steps</h2>
+<ul style="list-style: none;">
+    <li>
+        <h3 style="font-style: italic;">Step 0: Enable SSH on the Jessie SD Cards</h3>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-zLqtzSOmZmU/WjagsDt-uJI/AAAAAAAAC30/XUSV8aKAWhQMTUN5tffuLw51cs_xlEvwgCPcBGAYYCw/s1600/02%2BAdd%2Ban%2Bempty%2Bfile%2Bnamed%2Bssh%2Bwithout%2Ban%2Bextension.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-zLqtzSOmZmU/WjagsDt-uJI/AAAAAAAAC30/XUSV8aKAWhQMTUN5tffuLw51cs_xlEvwgCPcBGAYYCw/s1600/02%2BAdd%2Ban%2Bempty%2Bfile%2Bnamed%2Bssh%2Bwithout%2Ban%2Bextension.png" data-original-width="524" data-original-height="125" width="320" height="240" /></a></div>
+        <p>
+            <i>
+                VERY IMPORTANT NOTE: Putting an empty SSH extension-less file on the boot drive of each Jessie card would allow us to
+                connect to the router.
+            </i>
+        </p>
+    </li>
+    <li>
+        <h3 style="font-style: italic;">Step 1: Plug the SD cards to the Raspberry PIs</h3>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-DSJNhdSlcKM/Wjag1taxAXI/AAAAAAAAC3w/qk1gyP4PmG0FfhwcoxkGaxYXBFd1-CtewCPcBGAYYCw/s1600/IMG_2132.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-DSJNhdSlcKM/Wjag1taxAXI/AAAAAAAAC3w/qk1gyP4PmG0FfhwcoxkGaxYXBFd1-CtewCPcBGAYYCw/s1600/IMG_2132.JPG" data-original-width="1600" data-original-height="1200" width="320" height="240" /></a></div>
+    </li>
+    <li>
+        <h3 style="font-style: italic;">Step 2: Case them up!</h3>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://2.bp.blogspot.com/-27cle9U-VL8/Wjag93mYDHI/AAAAAAAAC30/Qagx0p5PyVEvE0RxtOtXWHOb865rvFiIgCPcBGAYYCw/s1600/IMG_2135.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://2.bp.blogspot.com/-27cle9U-VL8/Wjag93mYDHI/AAAAAAAAC30/Qagx0p5PyVEvE0RxtOtXWHOb865rvFiIgCPcBGAYYCw/s1600/IMG_2135.JPG" data-original-width="1600" data-original-height="1200" width="320" height="240" /></a></div>
+    </li>
+    <li>
+        <h3 style="font-style: italic;">Step 3: Tighten the screws to prevent jumping PIs.</h3>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-HSV9jOPVDOc/Wjah16Y-sFI/AAAAAAAAC38/WmpaQz5ikJUxnjZ4c0BAdXt7VnM12nOqwCLcBGAs/s1600/IMG_2139.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-HSV9jOPVDOc/Wjah16Y-sFI/AAAAAAAAC38/WmpaQz5ikJUxnjZ4c0BAdXt7VnM12nOqwCLcBGAs/s1600/IMG_2139.JPG" data-original-width="1600" data-original-height="1200" width="320" height="240" /></a></div>
+    </li>
+    <li>
+        <h3 style="font-style: italic;">Step 4: Plug your PI to your monitor, keyboard and mouse</h3>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://www.imore.com/sites/imore.com/files/styles/xlarge/public/field/image/2016/02/Raspberry-Pi-connect-keyboard-mouse-hero.jpg?itok=z0Cva_0A" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://www.imore.com/sites/imore.com/files/styles/xlarge/public/field/image/2016/02/Raspberry-Pi-connect-keyboard-mouse-hero.jpg?itok=z0Cva_0A" data-original-width="800" data-original-height="533" width="320" height="240" /></a></div>
+    </li>
+    <li>
+        <h3 style="font-style: italic;">Step 5: Plug the power source and check out the boot</h3>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-lJ81JxfYC1U/Wjah7555NAI/AAAAAAAAC4A/bokwvAU1IYwB6TUHgQqP-wywlxjl7193QCLcBGAs/s1600/IMG_2143.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-lJ81JxfYC1U/Wjah7555NAI/AAAAAAAAC4A/bokwvAU1IYwB6TUHgQqP-wywlxjl7193QCLcBGAs/s1600/IMG_2143.JPG" data-original-width="1600" data-original-height="1200" width="320" height="240" /></a></div>
+        <p>
+            <i>
+                Make sure to boot them up after plugging the items from step 4 to prevent weird issues from the PIs.
+            </i>
+        </p>
+    </li>
+    <li>
+        <h3 style="font-style: italic;">Step 6: Login to the PIs</h3>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/sdnbCEADst8" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen></iframe>
+        <p>
+            <i>
+                The default credentials for all PIs is Username: pi / Password: Raspberry
+            </i>
+        </p>
+    </li>
+    <li>
+        <h3 style="font-style: italic;">Step 7: Put Fixers at the bottom of the PIs</h3>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-8iHT1WC3o1g/WjaitibwipI/AAAAAAAAC4M/DQNIC1RbF_YLFpwQo0aQrxDNiYoV_nx4wCLcBGAs/s1600/IMG_2145.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-8iHT1WC3o1g/WjaitibwipI/AAAAAAAAC4M/DQNIC1RbF_YLFpwQo0aQrxDNiYoV_nx4wCLcBGAs/s1600/IMG_2145.JPG" data-original-width="1200" data-original-height="1600" width="320" height="240" /></a></div>
+        <p>
+            <i>
+                This would prevent this bad-ass kids from jumping out of stack (DAMN ARCYLIC CASE TAKES 2 WEEKS TO ARRIVE)
+            </i>
+        </p>
+    </li>
+</ul>
+<hr />
+<br />
+<h2>Watch your work become a beautiful portable beast that can travel the world.</h2>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-SXlvJsTFo2Y/WjajGn5Bb9I/AAAAAAAAC4Q/qApyKEi2UBAjB6cLIpo9SuW50Jv3u-2ZwCPcBGAYYCw/s1600/IMG_2146.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-SXlvJsTFo2Y/WjajGn5Bb9I/AAAAAAAAC4Q/qApyKEi2UBAjB6cLIpo9SuW50Jv3u-2ZwCPcBGAYYCw/s320/IMG_2146.JPG" width="320" height="240" data-original-width="1600" data-original-height="1200" /></a></div>
+<br />
+<div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-d_cVTU5SoPU/WjajJaBbB5I/AAAAAAAAC4Y/UGX0ZOXGdHw4lgJenrhRGbrtCut82tz-QCPcBGAYYCw/s1600/IMG_2148.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-d_cVTU5SoPU/WjajJaBbB5I/AAAAAAAAC4Y/UGX0ZOXGdHw4lgJenrhRGbrtCut82tz-QCPcBGAYYCw/s320/IMG_2148.JPG" width="320" height="240" data-original-width="1600" data-original-height="1200" /></a></div>
+<br />
+<div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-qiu7wVfeqxk/WjajHokNIUI/AAAAAAAAC4U/KGkjD9yEDDkpH_TDKdptJ-UdBA1n3jzBwCPcBGAYYCw/s1600/IMG_2147.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-qiu7wVfeqxk/WjajHokNIUI/AAAAAAAAC4U/KGkjD9yEDDkpH_TDKdptJ-UdBA1n3jzBwCPcBGAYYCw/s320/IMG_2147.JPG" width="320" height="240" data-original-width="1600" data-original-height="1200" /></a></div>
