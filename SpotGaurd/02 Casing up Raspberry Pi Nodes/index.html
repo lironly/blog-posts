@@ -1,4 +1,7 @@
 ﻿<div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-DQymvZHJfaI/WjalAHbGwhI/AAAAAAAAC4o/jF2-s_fwjUAmm2S6EW3_fagEqv937ZwIQCLcBGAs/s1600/IMG_2146.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-DQymvZHJfaI/WjalAHbGwhI/AAAAAAAAC4o/jF2-s_fwjUAmm2S6EW3_fagEqv937ZwIQCLcBGAs/s1600/IMG_2146.JPG" data-original-width="1600" data-original-height="1200" /></a></div>
+<p>
+    Part 1: <a href="https://pogsdotnet.blogspot.sg/2017/12/replicating-nextflix-part-1-installing.html">Replicating Netflix Part 1: Installing Raspbian Jessie Lite using Etcher</a>
+</p>
 <p style="text-align: center;">
     <i>
         This post is a continuation of my Replicating Netflix series. <a href="https://pogsdotnet.blogspot.sg/2017/12/replicating-nextflix-part-1-installing.html">Yesterday</a>, We have learned how to burn
@@ -6,13 +9,13 @@
         PIs and pimp them up with some cheap cases while waiting for our <a href="https://sg-live-02.slatic.net/p/2/clear-acrylic-cluster-case-5-layer-shelf-stack-for-raspberry-pi-32-b-and-b-intl-1508846616-58338496-edf9e263ed50556d74985ace5586aae4-zoom.jpg">clear acrylic cluster case.</a>
     </i>
 </p>
-<h2>Why Raspberry PIs for your cluster?</h2>
+<h2>Why use Raspberry PIs for your cluster?</h2>
 <p>
     I have picked Raspberry PIs for clustering because:
     <ul>
         <li>The power and compute they provide fit container based architectures.</li>
-        <li>They are very cheap cores that is worth investing.</li>
-        <li>They are extremely portable. I am currently based in Singapore and moving houses every once in a while is quite normal for everyone.</li>
+        <li>They are very cheap cores that are worth investing money with.</li>
+        <li>They are extremely portable.</li>
     </ul>
 </p>
 <h2>Whats Needed</h2>
@@ -22,7 +25,7 @@
         <h3 style="font-style: italic;">4 pieces of Raspberry PI 3</h3>
         <p>
             <i>
-                I am planning to scale it out to 6 clusters if the need arises. It would cost around 50 SGD at the time of writing (December 18, 2017)
+                I am planning to scale it out to 6 cluster nodes if the need arises. It would cost around 50 SGD at the time of writing (December 18, 2017)
             </i>
         </p>
     </li>
@@ -31,7 +34,7 @@
         <h3 style="font-style: italic;">4 SD cards with Raspbian Jessie Lite burned on them.</h3>
         <p>
             <i>
-                I picked the GUI less variant of the Jessie OS to maximize the performance that we can squeeze out of this tiny bad-ass nodes. (LOL)
+                I picked the GUI less variant of the Jessie OS to maximize the performance that we can squeeze out of these tiny bad-ass nodes. (LOL)
             </i>
         </p>
     </li>
@@ -62,7 +65,7 @@
         <p>
             <i>
                 VERY IMPORTANT NOTE: Putting an empty SSH extension-less file on the boot drive of each Jessie card would allow us to
-                connect to the router.
+                connect to the nodes via ssh over the network.
             </i>
         </p>
     </li>
@@ -83,7 +86,7 @@
         <div class="separator" style="clear: both; text-align: center;"><a href="https://www.imore.com/sites/imore.com/files/styles/xlarge/public/field/image/2016/02/Raspberry-Pi-connect-keyboard-mouse-hero.jpg?itok=z0Cva_0A" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://www.imore.com/sites/imore.com/files/styles/xlarge/public/field/image/2016/02/Raspberry-Pi-connect-keyboard-mouse-hero.jpg?itok=z0Cva_0A" data-original-width="800" data-original-height="533" width="320" height="240" /></a></div>
     </li>
     <li>
-        <h3 style="font-style: italic;">Step 5: Plug the power source and check out the boot</h3>
+        <h3 style="font-style: italic;">Step 5: Plug the power source and test out the boot system</h3>
         <div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-lJ81JxfYC1U/Wjah7555NAI/AAAAAAAAC4A/bokwvAU1IYwB6TUHgQqP-wywlxjl7193QCLcBGAs/s1600/IMG_2143.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-lJ81JxfYC1U/Wjah7555NAI/AAAAAAAAC4A/bokwvAU1IYwB6TUHgQqP-wywlxjl7193QCLcBGAs/s1600/IMG_2143.JPG" data-original-width="1600" data-original-height="1200" width="320" height="240" /></a></div>
         <p>
             <i>
