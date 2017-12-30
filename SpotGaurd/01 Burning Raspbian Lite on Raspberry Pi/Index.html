@@ -2,20 +2,20 @@
 <p style="text-align: center;">
     <i>
         This is the pilot post for building a Raspberry Pi cluster that I intend to use for building a Nextflix replica at home for research purposes, the goal of the post is to install a Raspbian Jessie Lite
-        on a Micro SD card that I plan to install on a Raspberry Pi.
+        on a Micro SD card that I plan to install on a <a target="_blank" href="https://www.amazon.com/gp/product/B01CD5VC92/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B01CD5VC92&linkCode=as2&tag=pogsdotnet-20&linkId=6143d557f0a8a773bd1d89015feb9077">Raspberry Pi 3 Model B Motherboard</a><img src="//ir-na.amazon-adsystem.com/e/ir?t=pogsdotnet-20&l=am2&o=1&a=B01CD5VC92" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />s.
     </i>
 </p>
 <p>
-    Most stores nowadays would sell Raspberry PIs that have pre-installed SD Cards and OS (Most of the time outdated). This is definitely OK and convenient but it is prone to two major problems:
+    Most stores nowadays would sell <a target="_blank" href="https://www.amazon.com/gp/product/B01CD5VC92/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B01CD5VC92&linkCode=as2&tag=pogsdotnet-20&linkId=6143d557f0a8a773bd1d89015feb9077">Raspberry Pi 3 Model B Motherboard</a><img src="//ir-na.amazon-adsystem.com/e/ir?t=pogsdotnet-20&l=am2&o=1&a=B01CD5VC92" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />s that have pre-installed SD Cards and OS (Most of the time outdated). This is definitely OK and convenient but it is prone to two major problems:
     <ul>
-        <li>Guys who buy Raspberry PIs with pre-installed SD cards and OS don't understand how to install things on their own.</li>
+        <li>Guys who buy <a target="_blank" href="https://www.amazon.com/gp/product/B01CD5VC92/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B01CD5VC92&linkCode=as2&tag=pogsdotnet-20&linkId=6143d557f0a8a773bd1d89015feb9077">Raspberry Pi 3 Model B Motherboard</a><img src="//ir-na.amazon-adsystem.com/e/ir?t=pogsdotnet-20&l=am2&o=1&a=B01CD5VC92" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />s with pre-installed SD cards and OS don't understand how to install things on their own.</li>
         <li>The pre-installed OS is often outdated from what is available from the internet.</li>
     </ul>
 </p>
 <h2>Stuff you need</h2>
 <p>
     <ul>
-        <li>An SD card with at least 48 MB/s transfer speed. For me I've used a <a href="http://www.samsung.com/sg/memory-storage/micro-sdhc-with-adapter/MB-MP32DAAPC/">Samsung micro SDHC™ UHS-1 Card</a> because faster cards are better!</li>
+        <li>An SD card with at least 48 MB/s transfer speed. For me I've used a <a target="_blank" href="https://www.amazon.com/gp/product/B01DOB6Y5Q/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B01DOB6Y5Q&linkCode=as2&tag=pogsdotnet-20&linkId=bfed58a71c0b3cdd870d1e0320d700e1">Samsung 32GB 80MB/s EVO Select Micro SDHC Memory Card (MB-ME32DA/AM)</a><img src="//ir-na.amazon-adsystem.com/e/ir?t=pogsdotnet-20&l=am2&o=1&a=B01DOB6Y5Q" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /> because faster cards are better!</li>
         <li>An image of <a href="https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2017-07-05/">Raspbian Jessie Lite</a>.</li>
         <li><a href="https://etcher.io">Etcher</a> (An SD Card Burner). It's an open source software that leads the competition!</li>
     </ul>
@@ -45,7 +45,7 @@
         <div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-2YCEjy13VCc/WjVAe-_ysAI/AAAAAAAAC1w/nJEASiDwwNMjGZvXXjhHCc8PrujWn5q0ACLcBGAs/s1600/03%2BSelect%2BImage.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-2YCEjy13VCc/WjVAe-_ysAI/AAAAAAAAC1w/nJEASiDwwNMjGZvXXjhHCc8PrujWn5q0ACLcBGAs/s1600/03%2BSelect%2BImage.png" data-original-width="784" data-original-height="70" /></a></div>
     </li>
     <li>
-        <h3>Step 4: Flash your SD card.</h3>
+        <h3>Step 4: Flash your <a target="_blank" href="https://www.amazon.com/gp/product/B01DOB6Y5Q/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B01DOB6Y5Q&linkCode=as2&tag=pogsdotnet-20&linkId=bfed58a71c0b3cdd870d1e0320d700e1">Samsung 32GB 80MB/s EVO Select Micro SDHC Memory Card (MB-ME32DA/AM)</a><img src="//ir-na.amazon-adsystem.com/e/ir?t=pogsdotnet-20&l=am2&o=1&a=B01DOB6Y5Q" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />.</h3>
         <div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-wyCWFK0Hk8c/WjVA211cF7I/AAAAAAAAC14/BGOWVbDi5uc2EiU6hhrFlhph0mUXdUWFQCPcBGAYYCw/s1600/04%2BFlash%2Byour%2Bimage.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-wyCWFK0Hk8c/WjVA211cF7I/AAAAAAAAC14/BGOWVbDi5uc2EiU6hhrFlhph0mUXdUWFQCPcBGAYYCw/s1600/04%2BFlash%2Byour%2Bimage.png" data-original-width="802" data-original-height="407" /></a></div>
     </li>
     <li>
@@ -60,8 +60,13 @@
 <h2>Conclusion</h2>
 <p>
     Installing <a href="https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2017-07-05/">Raspbian Jessie Lite</a>. in a SD card is quite manageable and should not
-    discourage people from buying Raspberry PIs that don't have pre-installed OS and SD card. Installing it on your own lets you save money and offers you the learning opportunity.
+    discourage people from buying <a target="_blank" href="https://www.amazon.com/gp/product/B01CD5VC92/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B01CD5VC92&linkCode=as2&tag=pogsdotnet-20&linkId=6143d557f0a8a773bd1d89015feb9077">Raspberry Pi 3 Model B Motherboard</a><img src="//ir-na.amazon-adsystem.com/e/ir?t=pogsdotnet-20&l=am2&o=1&a=B01CD5VC92" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /> that don't have pre-installed OS and SD card. Installing it on your own lets you save money and offers you the learning opportunity.
 </p>
 <p>
     Go to Part 2: <a href="https://pogsdotnet.blogspot.sg/2017/12/replicating-netflix-part-2-casing-up.html">Replicating Netflix Part 2: Casing up our tiny kick-ass cluster nodes (Raspberry PIs)</a>
 </p>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=B01CD5VC92&asins=B01CD5VC92&linkId=71bc9721df28a1e125843b00806e624c&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066C0&bg_color=FFFFFF"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=B01DOB6Y5Q&asins=B01DOB6Y5Q&linkId=7fa90dd6a0f9f343491e5db93160038a&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=B01D9130QC&asins=B01D9130QC&linkId=08785f2aa9c61f2f3384bdb58665a1d8&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=B00MQLB1N6&asins=B00MQLB1N6&linkId=d14bf289e636670d5de1890572e9473a&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=B01F1PSFY6&asins=B01F1PSFY6&linkId=b66ed7bdd87fdf479ccfe37136983b5f&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>

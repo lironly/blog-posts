@@ -1,0 +1,440 @@
+﻿<!-- Replicating Netflix Part 3: Setting up a network for Raspberry PI Clusters -->
+<div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-P3hlYuRttPU/WkOx4C6bJmI/AAAAAAAAC5U/o_QJCXre1hUYVrP9rYwoW-tz9VwKUu6DwCLcBGAs/s1600/Banner.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-P3hlYuRttPU/WkOx4C6bJmI/AAAAAAAAC5U/o_QJCXre1hUYVrP9rYwoW-tz9VwKUu6DwCLcBGAs/s1600/Banner.JPG" data-original-width="1600" data-original-height="1200" /></a></div>
+<p>
+    <small>Previous chapter: <a href="https://pogsdotnet.blogspot.sg/2017/12/replicating-netflix-part-2-casing-up.html">Replicating Netflix Part 2: Casing up our tiny kick-ass cluster nodes (Raspberry PIs)</a></small>
+</p>
+<p style="text-align: center;">
+    <i>
+        This is the third part of my "Replicating Netflix" series. The article's goal is to demonstrate the steps required to
+        setup a simple network that would enable <a target="_blank" href="https://www.amazon.com/gp/product/B01CD5VC92/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B01CD5VC92&linkCode=as2&tag=pogsdotnet-20&linkId=674d3fb16b1bbf0546eeae95a2229e8b">Raspberry PIs</a><img src="//ir-na.amazon-adsystem.com/e/ir?t=pogsdotnet-20&l=am2&o=1&a=B01CD5VC92" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+        to communicate with each other and access the Internet.
+    </i>
+</p>
+<p>
+    At the end of this article, we will be able to achieve the following:
+</p>
+<ul>
+    <li>Have a properly documented physical network layer</li>
+    <li>Setup an additional router that serves as an extender</li>
+    <li>Have static IPs for our Raspberry PIs</li>
+    <li>Ensure zero conflicting IPs between DHCP leased clients and static node IPs</li>
+    <li>SSH to our Raspberry PIs.</li>
+    <li>Access the Internet using our Raspberry PIs</li>
+</ul>
+<h2>The Raspberry PI 3 Cluster Network Diagram</h2>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-jxaGB4RFq5U/WkOtxrOrh3I/AAAAAAAAC5I/yi7SniVHltoVw4MchufUb57pd6JToI4JQCLcBGAs/s1600/01%2BNetwork%2BDiagram.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-jxaGB4RFq5U/WkOtxrOrh3I/AAAAAAAAC5I/yi7SniVHltoVw4MchufUb57pd6JToI4JQCLcBGAs/s1600/01%2BNetwork%2BDiagram.png" data-original-width="1000" data-original-height="538" /></a></div>
+<p style="text-align: center;">
+    <i>
+        Above is a network diagram that describes the target network topology for our <a target="_blank" href="https://www.amazon.com/gp/product/B01CD5VC92/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B01CD5VC92&linkCode=as2&tag=pogsdotnet-20&linkId=674d3fb16b1bbf0546eeae95a2229e8b">Raspberry PI</a><img src="//ir-na.amazon-adsystem.com/e/ir?t=pogsdotnet-20&l=am2&o=1&a=B01CD5VC92" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /> cluster. It would
+        be important to pay attention on the IPs of both routers and each Raspberry PI node.
+    </i>
+</p>
+<h2>What's Needed?</h2>
+<ul style="list-style: none;">
+    <!-- Router A -->
+    <li>
+        <h3 style="font-style: italic;">Your existing <a target="_blank" href="https://www.amazon.com/gp/product/B06X9CPC45/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B06X9CPC45&linkCode=as2&tag=pogsdotnet-20&linkId=b4da1fe774aadce5f191b39be9f76634">home router</a><img src="//ir-na.amazon-adsystem.com/e/ir?t=pogsdotnet-20&l=am2&o=1&a=B06X9CPC45" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></h3>
+        <p>
+            <i>
+                The purpose of this router is to manage the communication between your home's internal
+                devices and the Internet. This router will also be configured with a DHCP pool and static
+                IP reservations that would later on be used for ensuring predictability of Raspberry PI addresses.
+            </i>
+        </p>
+    </li>
+    <!-- Router B -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-xwnTBoQJNrQ/WkOs02mg3HI/AAAAAAAAC44/AgDRsVEOupwL5UOjBeVC7YpBPnesK1C9ACLcBGAs/s1600/02%2BTP%2BLink%2BRouter.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-xwnTBoQJNrQ/WkOs02mg3HI/AAAAAAAAC44/AgDRsVEOupwL5UOjBeVC7YpBPnesK1C9ACLcBGAs/s320/02%2BTP%2BLink%2BRouter.JPG" width="320" height="240" data-original-width="1600" data-original-height="1200" /></a></div>
+        <h3 style="font-style: italic;">A <a target="_blank" href="https://www.amazon.com/gp/product/B00E92LIQU/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00E92LIQU&linkCode=as2&tag=pogsdotnet-20&linkId=d74c4d51fe94438d2a7815f9079b96e8">TP-Link TL-WR840N Router</a><img src="//ir-na.amazon-adsystem.com/e/ir?t=pogsdotnet-20&l=am2&o=1&a=B00E92LIQU" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></h3>
+        <p>
+            <i>
+                This router would serve as a repeater that would extend the reach
+                of the main router to the switch where we intend to connect the cluster nodes.
+                We're going to do this because installing long network cables require tons of work and time
+                than simply connecting two routers together via WDS bridging.
+            </i>
+        </p>
+    </li>
+    <!-- Switch -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-XbJhNZJ-Q4Q/WkOtCVc_PaI/AAAAAAAAC48/Ohb2-kCLq3I9cUToOT90T0EcsUZy2HiUgCLcBGAs/s1600/03%2BDLink%2BSwitch.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-XbJhNZJ-Q4Q/WkOtCVc_PaI/AAAAAAAAC48/Ohb2-kCLq3I9cUToOT90T0EcsUZy2HiUgCLcBGAs/s320/03%2BDLink%2BSwitch.JPG" width="320" height="240" data-original-width="1600" data-original-height="1200" /></a></div>
+        <h3 style="font-style: italic;">An <a target="_blank" href="https://www.amazon.com/gp/product/B00CKK0KVC/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00CKK0KVC&linkCode=as2&tag=pogsdotnet-20&linkId=6683f1cde953544da77866c4a5bc155f">8-Port 10/100 Network Switch (DLink DES-1008A)</a><img src="//ir-na.amazon-adsystem.com/e/ir?t=pogsdotnet-20&l=am2&o=1&a=B00CKK0KVC" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></h3>
+        <p>
+            <i>
+                Getting this switch is optional, connecting the nodes to the repeater via Wifi should be
+                sufficient. It just happened that I prefer to have a switch because it provides more robust and
+                resilient connection between the Internet and the Raspberry PIs. It also saves your brain from
+                too much Wifi inside the room ;).
+            </i>
+        </p>
+    </li>
+    <!-- Flat Cables -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-80IUIeweSBA/WkO1awzxhaI/AAAAAAAAC5k/Xj_AWBIVjvsaaFWK8drSQoDUhJATxHkxgCLcBGAs/s1600/04%2BFlat%2BNetwork%2BCables.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-80IUIeweSBA/WkO1awzxhaI/AAAAAAAAC5k/Xj_AWBIVjvsaaFWK8drSQoDUhJATxHkxgCLcBGAs/s320/04%2BFlat%2BNetwork%2BCables.JPG" width="320" height="240" data-original-width="1600" data-original-height="1200" /></a></div>
+        <h3 style="font-style: italic;">6 pieces of flat <a target="_blank" href="https://www.amazon.com/gp/product/B01IQWGRPA/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B01IQWGRPA&linkCode=as2&tag=pogsdotnet-20&linkId=38d8b0b3bed7b0ba087dbc8a46f624b2">Ethernet cables</a><img src="//ir-na.amazon-adsystem.com/e/ir?t=pogsdotnet-20&l=am2&o=1&a=B01IQWGRPA" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></h3>
+        <p>
+            <i>
+                These flat network cables would be utilized for connecting our <a target="_blank" href="https://www.amazon.com/gp/product/B01CD5VC92/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B01CD5VC92&linkCode=as2&tag=pogsdotnet-20&linkId=31d0877a69bf6b0c8b75b7a959294ff2">Raspberry PIs</a><img src="//ir-na.amazon-adsystem.com/e/ir?t=pogsdotnet-20&l=am2&o=1&a=B01CD5VC92" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+                to the switch. (Remember this is optional, I am just taking this extra step because I want to reduce the WIFI interference inside my room)
+            </i>
+        </p>
+    </li>
+    <!-- Power Cables -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-a5XTZ-1g7gQ/WkO1jsXyw-I/AAAAAAAAC5o/PH8OlE7HrfskBeMN_Kmlj5dVoITv227xwCLcBGAs/s1600/05%2BPower%2BCables.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-a5XTZ-1g7gQ/WkO1jsXyw-I/AAAAAAAAC5o/PH8OlE7HrfskBeMN_Kmlj5dVoITv227xwCLcBGAs/s320/05%2BPower%2BCables.JPG" width="320" height="240" data-original-width="1600" data-original-height="1200" /></a></div>
+        <h3 style="font-style: italic;">6 pieces of <a target="_blank" href="https://www.amazon.com/gp/product/B00JU24Z3W/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00JU24Z3W&linkCode=as2&tag=pogsdotnet-20&linkId=5feee607d387179ecbe1299f4925d543">micro USB power cable</a><img src="//ir-na.amazon-adsystem.com/e/ir?t=pogsdotnet-20&l=am2&o=1&a=B00JU24Z3W" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></h3>
+        <p>
+            <i>
+                These power cables would be used to provide power to your Raspberry PIs. (You would only need 4 but it would be safe to keep some reserves to prevent delays on your project).
+            </i>
+        </p>
+    </li>
+    <!-- Raspberry PIs -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-ifcX7q2AWmw/WkO2znrbgDI/AAAAAAAAC50/othQStZZw7MOT5fQozdqxkL7REazFb0JACLcBGAs/s1600/06%2BRaspberry%2BPIs.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-ifcX7q2AWmw/WkO2znrbgDI/AAAAAAAAC50/othQStZZw7MOT5fQozdqxkL7REazFb0JACLcBGAs/s320/06%2BRaspberry%2BPIs.JPG" width="320" height="240" data-original-width="1600" data-original-height="1200" /></a></div>
+        <h3 style="font-style: italic;">4 <a target="_blank" href="https://www.amazon.com/gp/product/B01CD5VC92/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B01CD5VC92&linkCode=as2&tag=pogsdotnet-20&linkId=83c66e82ed183830a74d00c6cf39df4c">Raspberry PIs</a><img src="//ir-na.amazon-adsystem.com/e/ir?t=pogsdotnet-20&l=am2&o=1&a=B01CD5VC92" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /> with Raspbian Jessie Lite</h3>
+        <p>
+            <i>
+                We would need the Raspberry PIs that we've setup from my <a href="https://pogsdotnet.blogspot.sg/2017/12/replicating-netflix-part-2-casing-up.html">previous articles</a>.
+            </i>
+        </p>
+    </li>
+</ul>
+<br />
+<h2>Steps</h2>
+<hr />
+<ul style="list-style: none;">
+    <!-- Labels -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-ElD01HfZ1Kw/WkO4pLj89nI/AAAAAAAAC6A/z2y57v7Q0cg3K3GI3tSbfvY6oRPk_2ZzgCLcBGAs/s1600/07%2BLabels.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-ElD01HfZ1Kw/WkO4pLj89nI/AAAAAAAAC6A/z2y57v7Q0cg3K3GI3tSbfvY6oRPk_2ZzgCLcBGAs/s320/07%2BLabels.JPG" width="320" height="240" data-original-width="1600" data-original-height="1200" /></a></div>
+        <h3 style="font-style: italic;">Step 1: Create Labels</h3>
+        <p>
+            <i>
+                The first thing that you have to do is to create labels that would be placed on each end of Ethernet cables, power cables and each node of the cluster.
+                This would help us on identifying which cables connect to which node while working on the physical layer. (Don't punish your future self by not labeling your cables and nodes (LOL))
+            </i>
+        </p>
+    </li>
+    <!-- Labeling Raspberry PIs -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://2.bp.blogspot.com/-j6rJBB3wyVk/WkO67fIgDeI/AAAAAAAAC6Q/JXmvbXEBZ4AA4RpuX2SI1_KXktgO9o1GACLcBGAs/s1600/08%2BLabel%2BPIs.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://2.bp.blogspot.com/-j6rJBB3wyVk/WkO67fIgDeI/AAAAAAAAC6Q/JXmvbXEBZ4AA4RpuX2SI1_KXktgO9o1GACLcBGAs/s320/08%2BLabel%2BPIs.JPG" width="320" height="240" data-original-width="1600" data-original-height="1200" /></a></div>
+        <h3 style="font-style: italic;">Step 2: Label Raspberry PIs</h3>
+        <p>
+            <i>
+                First step is to label all the nodes that would be attached to our cluster. This would enable you to determine which node is what.
+            </i>
+        </p>
+    </li>
+    <!-- Labeling Ethernet Cables-->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-apVvIP_B4X4/WkO7Alcb1oI/AAAAAAAAC6U/pbXGumid4K4dvD6tJKZNMIuAsmplMxctQCLcBGAs/s1600/09%2BLabel%2BEthernets.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-apVvIP_B4X4/WkO7Alcb1oI/AAAAAAAAC6U/pbXGumid4K4dvD6tJKZNMIuAsmplMxctQCLcBGAs/s320/09%2BLabel%2BEthernets.JPG" width="240" height="320" data-original-width="1200" data-original-height="1600" /></a></div>
+        <h3 style="font-style: italic;">Step 3: Label Ethernet Cables</h3>
+        <p>
+            <i>
+                Attach labels on both ends of your Ethernet cables so that you can easily determine which cable connects what on each switch.
+            </i>
+        </p>
+    </li>
+    <!-- Labeling Power Cables-->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-lbg45lGIwWk/WkO7Golx8vI/AAAAAAAAC6Y/CDscDaHtSJIBIvz1rlCpHaAC7ldmNslswCLcBGAs/s1600/10%2BLabel%2BPower%2BCables.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-lbg45lGIwWk/WkO7Golx8vI/AAAAAAAAC6Y/CDscDaHtSJIBIvz1rlCpHaAC7ldmNslswCLcBGAs/s320/10%2BLabel%2BPower%2BCables.JPG" width="240" height="320" data-original-width="1200" data-original-height="1600" /></a></div>
+        <h3 style="font-style: italic;">Step 4: Label Power Cables</h3>
+        <p>
+            <i>
+                Attach labels on both ends of your power cables so that you can easily determine which power cable is used by each node.
+            </i>
+        </p>
+    </li>
+    <!-- Connect to your existing home router -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-blY-5nO2nww/WkO-AZ9QiUI/AAAAAAAAC6o/tDF-inVPfXIf_Q3k3pBueEflU1yZJDqnQCLcBGAs/s1600/11%2BSetup%2BDHCP%2BPool.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-blY-5nO2nww/WkO-AZ9QiUI/AAAAAAAAC6o/tDF-inVPfXIf_Q3k3pBueEflU1yZJDqnQCLcBGAs/s320/11%2BSetup%2BDHCP%2BPool.jpg" width="320" height="197" data-original-width="351" data-original-height="216" /></a></div>
+        <h3 style="font-style: italic;">Step 5: Setup DHCP pool on your existing home router (ROUTER A)</h3>
+        <p>
+            <i>
+                Connect to your existing router's admin portal (By default located at 192.168.1.1 or 192.168.0.1) and ensure that
+                there would only be 50 IPs that the router can lease via DHCP (192.168.1.100 - 192.168.1.150). This step would
+                prevent IP conflicts for your cluster nodes (statically addressed) with any DHCP leased client on your network.
+            </i>
+        </p>
+    </li>
+    <!-- Connect Router B To Power and PC -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-UF9xhodt9eI/WkO-HFtJrmI/AAAAAAAAC6s/Pdvuz6zN3PEBwd53YIfNfcari1A5BTWtACLcBGAs/s1600/12%2BSetup%2BRouter.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-UF9xhodt9eI/WkO-HFtJrmI/AAAAAAAAC6s/Pdvuz6zN3PEBwd53YIfNfcari1A5BTWtACLcBGAs/s320/12%2BSetup%2BRouter.JPG" width="320" height="240" data-original-width="1600" data-original-height="1200" /></a></div>
+        <h3 style="font-style: italic;">Step 6: Connect your Router B (TPLink) to power outlet and a PC</h3>
+        <p>
+            <i>
+                Connecting your Router B to your PC via Ethernet cable would enable us to setup the repeater mode on it.
+            </i>
+        </p>
+    </li>
+    <!-- 13 Login to Router B-->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-A3Kg4nu1Tbs/Wkbob_LWTgI/AAAAAAAAC68/Oiqb8Jf4IqIIkePGRLIFiJ52VapRQwApQCLcBGAs/s1600/13%2BLogin%2Bto%2BRouter%2BA.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-A3Kg4nu1Tbs/Wkbob_LWTgI/AAAAAAAAC68/Oiqb8Jf4IqIIkePGRLIFiJ52VapRQwApQCLcBGAs/s320/13%2BLogin%2Bto%2BRouter%2BA.png" width="320" height="199" data-original-width="459" data-original-height="286" /></a></div>
+        <h3 style="font-style: italic;">Step 7: Login to Router B</h3>
+        <p>
+            <i>
+                Navigate to the Router B's admin portal on 192.168.0.1 and login using admin/admin credentials.
+            </i>
+        </p>
+    </li>
+    <!-- 14 Go to quick setup mode -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-F4zgVU2lWrQ/WkbpgeoVvLI/AAAAAAAAC7Q/V5V37FqVMNwWSxphVKsTNbCA3pUeuyhFgCLcBGAs/s1600/14%2BGo%2Bto%2Bquick%2Bsetup.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-F4zgVU2lWrQ/WkbpgeoVvLI/AAAAAAAAC7Q/V5V37FqVMNwWSxphVKsTNbCA3pUeuyhFgCLcBGAs/s400/14%2BGo%2Bto%2Bquick%2Bsetup.png" width="400" height="229" data-original-width="725" data-original-height="415" /></a></div>
+        <h3 style="font-style: italic;">Step 8: Go the router's quick setup mode</h3>
+        <p>
+            <i>
+                After a successful login to the router's admin portal, you will be seeing the quick setup menu on the left side
+                of the page. Click it and select "Next" button.
+            </i>
+        </p>
+    </li>
+    <!-- 15 Select Repeater Mode -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-MrzeiZL8oIw/WkbrGCSn_vI/AAAAAAAAC7g/Ob5KM4ZuM3Ijuymk3N9i3a0L_tOG-Go3gCPcBGAYYCw/s1600/15%2BSelect%2BRepeater%2BMode.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-MrzeiZL8oIw/WkbrGCSn_vI/AAAAAAAAC7g/Ob5KM4ZuM3Ijuymk3N9i3a0L_tOG-Go3gCPcBGAYYCw/s1600/15%2BSelect%2BRepeater%2BMode.png" data-original-width="559" data-original-height="248" /></a></div>
+        <h3 style="font-style: italic;">Step 9: Enable Repeater Mode</h3>
+        <p>
+            <i>
+                You will be prompted with a option of operation mode that the router can perform. Select the "Range Extender" option from the list. This would
+                enable us to connect the two Routers together and propagate internet connection from Router A to the Raspberry PIs in a wireless fashion.
+            </i>
+        </p>
+    </li>
+    <!-- 16 Select Router A from the AP list and connect -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-NKSMS1RwNQU/WkbsY_6_MrI/AAAAAAAAC7s/pCntmatn-vkCEJ1mC3VnPFGrVcjQslwjwCPcBGAYYCw/s1600/16%2BSelect%2BRouter%2BA.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-NKSMS1RwNQU/WkbsY_6_MrI/AAAAAAAAC7s/pCntmatn-vkCEJ1mC3VnPFGrVcjQslwjwCPcBGAYYCw/s1600/16%2BSelect%2BRouter%2BA.png" data-original-width="770" data-original-height="207" /></a></div>
+        <h3 style="font-style: italic;">Step 10: Select Router A as Access Point</h3>
+        <p>
+            <i>
+                After selecting the operation mode, you will be presented with a list of all available access points that
+                your router can extend. Select your existing home access point and click connect.
+            </i>
+        </p>
+    </li>
+    <!-- 17 Setup Credentials -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-xo2CApAkucI/WkbuXNnqD2I/AAAAAAAAC78/3Pf-sQGrMKQCXm0K5OIVPsxdrumEn1v8wCLcBGAs/s1600/17%2BSetup%2BCredentials%2Band%2BRouter%2BB%2BSSID.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-xo2CApAkucI/WkbuXNnqD2I/AAAAAAAAC78/3Pf-sQGrMKQCXm0K5OIVPsxdrumEn1v8wCLcBGAs/s1600/17%2BSetup%2BCredentials%2Band%2BRouter%2BB%2BSSID.png" data-original-width="560" data-original-height="337" /></a></div>
+        <h3 style="font-style: italic;">Step 11: Setup Credentials on Router B</h3>
+        <p>
+            <i>
+                Provide the password to your Router A's Wifi network and customize the SSID of the
+                range extender by providing a name on the "Customize" field and click "Next" button.
+            </i>
+        </p>
+    </li>
+    <!-- 18 Setup Router B IP -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-sEezyVZI0Ao/Wkbwg6HnfcI/AAAAAAAAC8U/-Dl2RqW8-xQqLfH3kE2C9ONezoOHiENIACLcBGAs/s1600/19%2BFinish%2BRouter%2BB%2BSetup.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-sEezyVZI0Ao/Wkbwg6HnfcI/AAAAAAAAC8U/-Dl2RqW8-xQqLfH3kE2C9ONezoOHiENIACLcBGAs/s1600/19%2BFinish%2BRouter%2BB%2BSetup.png" data-original-width="494" data-original-height="307" /></a></div>
+        <h3 style="font-style: italic;">Step 12: Setup Router B's IP</h3>
+        <p>
+            <i>
+                Set the IP of router B to static and provide a IP address that will not conflict on
+                your local network's DHCP pool. For me it is "192.168.1.10". You will also have to disable the DHCP
+                server on this router to prevent IP collisions between router A and B clients.
+            </i>
+        </p>
+    </li>
+    <!-- 19 Finish Router B Configuration -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-n7UCMOOCJZg/WkbwRv3Mu6I/AAAAAAAAC8Q/6X12afLliZIlnbGozPW1WjJ3SXR8vw1XQCLcBGAs/s1600/19%2BFinish%2BRouter%2BB%2BSetup.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-n7UCMOOCJZg/WkbwRv3Mu6I/AAAAAAAAC8Q/6X12afLliZIlnbGozPW1WjJ3SXR8vw1XQCLcBGAs/s1600/19%2BFinish%2BRouter%2BB%2BSetup.png" data-original-width="494" data-original-height="307" /></a></div>
+        <h3 style="font-style: italic;">Step 13: Verify Router B details and finish setup</h3>
+        <p>
+            <i>
+                Verify if all the values you provided on your router B are correct and click finish. Clicking finish
+                will cause the Router B to reboot. To verify if your router's Internet propagation setup is working,
+                try to connect to the router's Wifi channel and browse the Internet. If not you would have to revisit
+                the steps you've taken and reset the router to factory configurations if required.
+            </i>
+        </p>
+    </li>
+    <!-- 20 Connect Switch to Router and Power Outlet-->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://2.bp.blogspot.com/-8CKbv_lhT0g/Wkb0gDnCJ2I/AAAAAAAAC8k/4LS59efq5u8J0Fv_lHgwhY0uWSfpPYyawCLcBGAs/s1600/20%2BConnect%2BSwith%2Bto%2BRouter%2Band%2BPower.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://2.bp.blogspot.com/-8CKbv_lhT0g/Wkb0gDnCJ2I/AAAAAAAAC8k/4LS59efq5u8J0Fv_lHgwhY0uWSfpPYyawCLcBGAs/s320/20%2BConnect%2BSwith%2Bto%2BRouter%2Band%2BPower.JPG" width="320" height="240" data-original-width="1600" data-original-height="1200" /></a></div>
+        <h3 style="font-style: italic;">Step 14: Connect Switch to Router B</h3>
+        <p>
+            <i>
+                Connect your DLink switch to Router B via Ethernet cable.
+            </i>
+        </p>
+    </li>
+    <!-- 21 Connect Raspberry PI to your monitor-->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://2.bp.blogspot.com/-RTgI7g5h95k/Wkb1iKixIDI/AAAAAAAAC80/YYg_Yn2KUKQat4dqBEf9INOghYkfKNjdQCLcBGAs/s1600/21%2BConfigure%2BPIs.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://2.bp.blogspot.com/-RTgI7g5h95k/Wkb1iKixIDI/AAAAAAAAC80/YYg_Yn2KUKQat4dqBEf9INOghYkfKNjdQCLcBGAs/s320/21%2BConfigure%2BPIs.JPG" width="320" height="240" data-original-width="1600" data-original-height="1200" /></a></div>
+        <h3 style="font-style: italic;">Step 15: Setup PIs for static IP configuration</h3>
+        <p>
+            <i>
+                Connect your Raspberry PI to a keyboard, mouse and spare monitor. Connect power cable to outlet
+                to ensure safety.
+            </i>
+        </p>
+    </li>
+    <!-- 22 Login to Raspberry PI-->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-WayhxgQjE90/Wkb2OaLNwiI/AAAAAAAAC88/-PWKjSuXyNoEk1bW0bovLSUFtfxys75nwCLcBGAs/s1600/22%2BLogin%2Bto%2BPI.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-WayhxgQjE90/Wkb2OaLNwiI/AAAAAAAAC88/-PWKjSuXyNoEk1bW0bovLSUFtfxys75nwCLcBGAs/s320/22%2BLogin%2Bto%2BPI.JPG" width="240" height="320" data-original-width="1200" data-original-height="1600" /></a></div>
+        <h3 style="font-style: italic;">Step 16: Login to Raspberry PI</h3>
+        <p>
+            <i>
+                To configure the IP of each Raspberry PI, login to each of them using pi/raspberry credentials.
+            </i>
+        </p>
+    </li>
+    <!-- 23 Open DHCPCD configuration -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://2.bp.blogspot.com/--jbomMh_5u4/Wkb263pbcMI/AAAAAAAAC9E/W7uF2XHBIfMjmQEbNMVUA6LuEVjuPV0UACLcBGAs/s1600/23%2BOpen%2BDHCPCD%2Bconfiguration.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://2.bp.blogspot.com/--jbomMh_5u4/Wkb263pbcMI/AAAAAAAAC9E/W7uF2XHBIfMjmQEbNMVUA6LuEVjuPV0UACLcBGAs/s320/23%2BOpen%2BDHCPCD%2Bconfiguration.JPG" width="320" height="240" data-original-width="1600" data-original-height="1200" /></a></div>
+        <h3 style="font-style: italic;">Step 17: Open dhcpcd.conf</h3>
+        <p>
+            <i>
+                Open DHCPCD.conf file using <strong>"sudo nano dhcpcd.conf"</strong> command. This file contains
+                all the network configurations on a device running Raspbian Jessie Lite.
+            </i>
+        </p>
+    </li>
+    <!-- 24 Setup Ethernet Interface Configuration -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://2.bp.blogspot.com/-SICTnV_y5FQ/Wkb5LR6VxjI/AAAAAAAAC9Q/SBafPr5Z5lQ2-zt-RukNKNU3l_WF22O_wCLcBGAs/s1600/24%2BSetup%2BEthernet%2BInterface%2BConfiguration.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://2.bp.blogspot.com/-SICTnV_y5FQ/Wkb5LR6VxjI/AAAAAAAAC9Q/SBafPr5Z5lQ2-zt-RukNKNU3l_WF22O_wCLcBGAs/s320/24%2BSetup%2BEthernet%2BInterface%2BConfiguration.JPG" width="320" height="240" data-original-width="1600" data-original-height="1200" /></a></div>
+        <h3 style="font-style: italic;">Step 18: Setup Ethernet Interface Configuration</h3>
+        <p>
+            <i>
+                To provide static IPs on your Raspberry PIs, navigate to the end of each DHCPCD.conf files and add the configuration (Put different IPs for each node, (Refer to network diagram on top)) below: <br />
+            </i>
+        </p>
+        <strong>interface eth0</strong><br />
+        <strong>&nbsp;</strong><br />
+        <strong>static ip_address=192.168.1.10/24</strong><br />
+        <strong>static routers=192.168.1.1</strong><br />
+        <strong>static domain_name_servers=192.168.1.1</strong>
+        <br />
+        <p>
+            <i>
+                After entering each command, save the dhcpcd.conf file and exit.
+            </i>
+        </p>
+    </li>
+    <!-- 25 Reboot Raspberry PIs -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://2.bp.blogspot.com/-ETSpAzn_rL4/Wkb6cRIS4ZI/AAAAAAAAC9g/L900nf46v7sVfHzWGsMvmdsto0TaIJpmwCPcBGAYYCw/s1600/25%2BReboot%2BConnection.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://2.bp.blogspot.com/-ETSpAzn_rL4/Wkb6cRIS4ZI/AAAAAAAAC9g/L900nf46v7sVfHzWGsMvmdsto0TaIJpmwCPcBGAYYCw/s320/25%2BReboot%2BConnection.JPG" width="320" height="240" data-original-width="1600" data-original-height="1200" /></a></div>
+        <h3 style="font-style: italic;">Step 19: Reboot Raspberry PIs</h3>
+        <p>
+            <i>
+                For the network configurations to work, you will have to reboot the Raspberry PI using the <strong>"sudo shutdown -r now"</strong> command. The "-r" flag
+                indicates that the command's intent is to reboot the system. Placing "-h" option there would cause the node to shutdown.
+            </i>
+        </p>
+    </li>
+    <!-- 26 Verify configurations -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-gxmykKnu1oc/Wkb7uALj9eI/AAAAAAAAC9o/IAqgmr8h1rMTgT_9xKsANZUX2sVWIUKkgCLcBGAs/s1600/26%2BCheck%2BRouter%2BCredentials.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-gxmykKnu1oc/Wkb7uALj9eI/AAAAAAAAC9o/IAqgmr8h1rMTgT_9xKsANZUX2sVWIUKkgCLcBGAs/s320/26%2BCheck%2BRouter%2BCredentials.JPG" width="320" height="240" data-original-width="1600" data-original-height="1200" /></a></div>
+        <h3 style="font-style: italic;">Step 20: Check if your router settings worked.</h3>
+        <p>
+            <i>
+                After rebooting the pi, test and check if your configurations were stored properly. You can do this by typing the <strong>ifconfig</strong> and
+                verifying the Ethernet interface 0 configurations. Repeat steps 15-20 to configure all Raspberry PI nodes.
+            </i>
+        </p>
+    </li>
+    <!-- 27 Tie Down Ethernet Cables  -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://2.bp.blogspot.com/-yTZqzUpzj4s/Wkb9sryxVAI/AAAAAAAAC94/3HStOb7IgU8QF23VKhMH1QJlJ5sG_zzjwCLcBGAs/s1600/27%2BConfigure%2BFlat%2BCables.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://2.bp.blogspot.com/-yTZqzUpzj4s/Wkb9sryxVAI/AAAAAAAAC94/3HStOb7IgU8QF23VKhMH1QJlJ5sG_zzjwCLcBGAs/s320/27%2BConfigure%2BFlat%2BCables.JPG" width="240" height="320" data-original-width="1200" data-original-height="1600" /></a></div>
+        <h3 style="font-style: italic;">Step 21: Prepare Ethernet cables</h3>
+        <p>
+            <i>
+                Prepare the Ethernet cables by grouping them up.
+            </i>
+        </p>
+    </li>
+    <!-- 28 Tie Down Ethernet Cables   -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://2.bp.blogspot.com/-4EYImqVBNr4/Wkb9wf1GeJI/AAAAAAAAC98/TvBSnjKUPj096NtX14iFYP4ugh0qbq1PQCLcBGAs/s1600/28%2BConfigure%2BPower%2BCables.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://2.bp.blogspot.com/-4EYImqVBNr4/Wkb9wf1GeJI/AAAAAAAAC98/TvBSnjKUPj096NtX14iFYP4ugh0qbq1PQCLcBGAs/s320/28%2BConfigure%2BPower%2BCables.JPG" width="240" height="320" data-original-width="1200" data-original-height="1600" /></a></div>
+        <h3 style="font-style: italic;">Step 22: Prepare power cables</h3>
+        <p>
+            <i>
+                Just like the Ethernet cables, prepare the power cables by grouping them up.
+            </i>
+        </p>
+    </li>
+    <!-- 29 Connect Raspberry PIs to your the Switch and Power outlet   -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-J8vRRSz1hqo/Wkb-ZTchFmI/AAAAAAAAC-E/w4YjFdaF9RULAej8X_S-57RFBJs8l01MwCLcBGAs/s1600/29%2BSSH%2BStarts.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-J8vRRSz1hqo/Wkb-ZTchFmI/AAAAAAAAC-E/w4YjFdaF9RULAej8X_S-57RFBJs8l01MwCLcBGAs/s320/29%2BSSH%2BStarts.JPG" width="240" height="320" data-original-width="1200" data-original-height="1600" /></a></div>
+        <h3 style="font-style: italic;">Step 23: Connect Raspberry PIs to your the Switch and Power outlet</h3>
+        <p>
+            <i>
+                Hurray, this is where the fun starts, no more manual hardware configurations and everything can be done using SSH! :)
+            </i>
+        </p>
+    </li>
+    <!-- 30  Ping each PI from your PC  -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-OKkD04horXk/Wkb_yU0S_4I/AAAAAAAAC-U/cd3CnxgwhZAtioFhCTZHkcaj-pqfU5CSQCPcBGAYYCw/s1600/30%2BPing%2BRouter%2BA%2B%2528Gateway%2529.JPG" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-OKkD04horXk/Wkb_yU0S_4I/AAAAAAAAC-U/cd3CnxgwhZAtioFhCTZHkcaj-pqfU5CSQCPcBGAYYCw/s1600/30%2BPing%2BRouter%2BA%2B%2528Gateway%2529.JPG" data-original-width="960" data-original-height="1040" /></a></div>
+        <h3 style="font-style: italic;">Step 24: Ping each PI from your PC</h3>
+        <p>
+            <i>
+                To test that your PIs are all properly working and discoverable in the network, ping them from your
+                PC by running <strong>cmd</strong> and typing "ping 192.168.1.x" for each of your router nodes.
+            </i>
+        </p>
+    </li>
+    <!-- 31 Testing SSH  -->
+    <li>
+        <div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-syahhkt1mAo/WkcBOmRJv4I/AAAAAAAAC-g/EN2AFxEzqYoW8W0oCcifZ882HJBxqezfgCLcBGAs/s1600/31%2BConnect%2Bto%2BPI%2Bvia%2BSSH%2Busing%2BPutty.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-syahhkt1mAo/WkcBOmRJv4I/AAAAAAAAC-g/EN2AFxEzqYoW8W0oCcifZ882HJBxqezfgCLcBGAs/s1600/31%2BConnect%2Bto%2BPI%2Bvia%2BSSH%2Busing%2BPutty.png" data-original-width="453" data-original-height="443" /></a></div>
+        <h3 style="font-style: italic;">Step 25: SSH to each of your PIs using <a href="http://www.putty.org">Putty</a></h3>
+        <p>
+            <i>
+                Now that you can ping each node from your PC, we have to test SSH connections as it will be a critical factor
+                for installing <a href="https://www.docker.com">Docker</a> and <a href="https://kubernetes.io">Kubernetes</a> on our cluster nodes.
+            </i>
+        </p>
+    </li>
+    <!-- 32 Login to PI using SSH  -->
+    <li>
+
+        <h3 style="font-style: italic;">Step 26: Login to PI using SSH</h3>
+        <p>
+            <i>
+                If the SSH connection triggered by Putty worked, you will see the screen above and you have to login using pi/raspberry credentials. 
+            </i>
+        </p>
+    </li>
+    <!-- 33 Pinging Google -->
+    <li>
+        <div style="position:relative;height:0;padding-bottom:56.25%"><iframe src="https://www.youtube.com/embed/XgeKP-msYuU?ecver=2" width="640" height="360" frameborder="0" gesture="media" allow="encrypted-media" style="position:absolute;width:100%;height:100%;left:0" allowfullscreen></iframe></div>
+        <h3 style="font-style: italic;">Step 26: Pinging Google</h3>
+        <p>
+            <i>
+                To celebrate the effort we had put on setting up the network, lets do the traditional ping Google party.
+            </i>
+        </p>
+    </li>
+</ul>
+<h2>Conclusion</h2>
+<p>
+    Today, we've successfully setup the network where we intend to run our Kubernetes Cluster. As mentioned on the top of the article, we've also achieve the following: 
+</p>
+<ul>
+    <li>Have a properly documented physical network layer</li>
+    <li>Setup an additional router that serves as an extender</li>
+    <li>Have static IPs for our Raspberry PIs</li>
+    <li>Ensure zero conflicting IPs between DHCP leased clients and static node IPs</li>
+    <li>SSH to our Raspberry PIs.</li>
+    <li>Access the Internet using our Raspberry PIs</li>
+</ul>
+<h2>Related Articles</h2>
+<hr />
+<ul style="list-style: none;">
+    <li>
+        <small>
+            <a href="https://pogsdotnet.blogspot.sg/2017/12/replicating-nextflix-part-1-installing.html">Replicating Netflix Part 1: Installing Raspbian Jessie Lite using Etcher</a>
+        </small>
+    </li>
+    <li>
+        <small>
+            <a href="https://pogsdotnet.blogspot.sg/2017/12/replicating-netflix-part-2-casing-up.html">Replicating Netflix Part 2: Casing up our tiny kick-ass cluster nodes (Raspberry PIs)</a>
+        </small>
+    </li>
+</ul>
+<br />
+<h2>Want to build your own Raspberry PI Cluster?</h2>
+<hr />
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=B01CD5VC92&asins=B01CD5VC92&linkId=71bc9721df28a1e125843b00806e624c&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066C0&bg_color=FFFFFF"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=B01DOB6Y5Q&asins=B01DOB6Y5Q&linkId=7fa90dd6a0f9f343491e5db93160038a&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=B01D9130QC&asins=B01D9130QC&linkId=08785f2aa9c61f2f3384bdb58665a1d8&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=B00MQLB1N6&asins=B00MQLB1N6&linkId=d14bf289e636670d5de1890572e9473a&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=B06X9CPC45&asins=B06X9CPC45&linkId=965749273bf89117283eb55c7e332947&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
