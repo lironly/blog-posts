@@ -1,0 +1,81 @@
+﻿<!-- Microservices: Containers and Virtual Machines -->
+<div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-jL3Wl3kYP8s/WkuubGxWskI/AAAAAAAADBE/lEF_pCKFBU4-_ZPnTRPIQIGQ0lBSbpjiwCLcBGAs/s1600/Banner.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-jL3Wl3kYP8s/WkuubGxWskI/AAAAAAAADBE/lEF_pCKFBU4-_ZPnTRPIQIGQ0lBSbpjiwCLcBGAs/s1600/Banner.png" data-original-width="1600" data-original-height="900" /></a></div>
+<p style="text-align: center;">
+    <i>
+        In the <a href="http://pogsdotnet.blogspot.com/2017/12/replicating-netflix-part-3-setting-up.html">previous</a> article, we've setup a cluster of SSH-enabled
+        <a target="_blank" href="https://www.amazon.com/gp/product/B01CD5VC92/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B01CD5VC92&linkCode=as2&tag=pogsdotnet-20&linkId=0ca5641ca25e22f6f6840eae6eee3be0">Raspberry PIs</a><img src="//ir-na.amazon-adsystem.com/e/ir?t=pogsdotnet-20&l=am2&o=1&a=B01CD5VC92" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /> that will serve as nodes for a <a href="https://kubernetes.io">Kubernetes</a> cluster.
+        Before demonstrating the steps required to install <a href="https://www.docker.com/what-container">Docker</a> and <a href="https://kubernetes.io">Kubernetes</a> on our <a target="_blank" href="https://www.amazon.com/gp/product/B01CD5VC92/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B01CD5VC92&linkCode=as2&tag=pogsdotnet-20&linkId=0ca5641ca25e22f6f6840eae6eee3be0">Raspberry PI</a> Cluster, we will tackle the added value that <a href="https://www.docker.com/what-container">containers</a> provide over virtual machines.
+    </i>
+</p>
+<p>
+    Computing is the process of running "intangible functions" on a set of "tangible" resources (CPUs, RAM, Disk and Network) to accomplish a task at hand, from a simple "Hello World" application to
+    a complex distributed system. Over time, the hardware producers had continuously unveiled more powerful versions of their products, often the applications running on top of them does
+    not even utilize a fraction of the resources provided by their hosting physical machines. Thus, giving birth to virtualization of resources that enable applications to run concurrently.
+</p>
+<p>
+    Prior to the cloud revolution, <a href="https://en.wikipedia.org/wiki/Virtual_machine">virtual machines</a> had been the dominant form of virtualization technique used for isolating application environments hosted by large on-premise physical machines. The sudden
+    boom of cloud industry (charges you for resources you provision and utilize) caused large companies to search for more efficient ways of running applications on infrastructure they rent. Thus, giving birth
+    to <a href="https://www.docker.com/what-docker">Containerization</a>.
+</p>
+<h2>What's is an Application Container?</h2>
+<p>
+    An application container is an instance of a lightweight, independent executable software package that includes everything (Guest OS, Runtime, Libraries, Application) it requires to run and
+    perform its job. Application containerization is a form of virtualization that abstracts on the <a href="https://en.wikipedia.org/wiki/Operating-system-level_virtualization">OS layer</a> which makes them more efficient than virtual machines (abstracts on the Kernel level through Hypervisor Implementations).
+</p>
+<h2>That's the same purpose why VM's exist right?</h2>
+<a href="https://2.bp.blogspot.com/-NZV5JpyLWro/WkegLli8jxI/AAAAAAAAC_g/FuepompuE00JWN0XtQubdrHWkQzT8zSrACLcBGAs/s1600/Image%2B1.png" imageanchor="1"><img border="0" src="https://2.bp.blogspot.com/-NZV5JpyLWro/WkegLli8jxI/AAAAAAAAC_g/FuepompuE00JWN0XtQubdrHWkQzT8zSrACLcBGAs/s1600/Image%2B1.png" data-original-width="1077" data-original-height="515" /></a>
+<p>
+    Yes, containers and VMs share the same purpose (To isolate applications into their own environment and make efficient use of underlying physical layer), but containers provide the following advantages over VMs:
+</p>
+<ul style="list-style: none;">
+    <li>
+        <h3>Containers are way more smaller.</h3>
+        <p>
+            Virtual machines abstract at hardware level which requires a <a href="https://en.wikipedia.org/wiki/Hypervisor">hypervisor</a> that would manage its kernels (Core of the operating system) as well as the kernels of
+            other virtual machines that run on the host system. Containers on the other hand run on top of a single Kernel which makes it more efficient and lightweight (The weight of Linux Busybox is 2MB!).
+        </p>
+    </li>
+    <li>
+        <h3>Containers are Immortals!</h3>
+        <p>
+            Don't get it wrong, containers do fail for unexpected reasons! Containers outclass VMs when it comes to OS corruptions because they can be
+            re-instantiated from immutable images that originate from a <a href="https://docs.docker.com/docker-hub/repos/">Docker Repository</a> which makes them resilient against corruption.
+            VMs on the other hand succumb from OS level corruptions and would be impossible to recover if there are no backups that exists.
+        </p>
+    </li>
+    <li>
+        <h3>Containers boot faster</h3>
+        <p>
+            Containers run on top of the host OS kernel which make them boot faster than virtual machines. This is even faster on a host OS (running at the time of container service provision) provided by
+            cloud platforms like <a href="https://azure.microsoft.com/en-us/services/container-service/">Windows Azure</a>.
+        </p>
+    </li>
+    <li>
+        <h3>Containers scale better in the cloud</h3>
+        <p>
+            On cloud platforms like <a href="https://azure.microsoft.com/en-us/">Windows Azure</a>, provisioning additional containers is faster than spinning up virtual machines using <a href="https://docs.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-overview">Virtual Machine Scale Sets</a>.
+        </p>
+    </li>
+</ul>
+<h2>Conclusion</h2>
+<p>
+    Isolating applications using Virtual Machines is a perfectly acceptable way of efficiently using physical machines, but containers provide added value over Virtual Machines especially on cloud platforms
+    like <a href="https://azure.microsoft.com/en-us/">Windows Azure</a>. 
+</p>
+<h2>Related Articles</h2>
+<hr />
+<ul style="list-style: none;">
+    <li>
+        <small>
+            <a href="http://pogsdotnet.blogspot.com/2017/11/microservices-picking-net-run-time-for.html">Microservices: Picking the .NET Framework for your containerized applications.</a>
+        </small>
+    </li>
+</ul>
+<h2>Why don't you become a Microservice Ninja?</h2>
+<hr />
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=1491950358&asins=1491950358&linkId=c84584aa71b2af294ec75ad9d6bcdcb6&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=1491965975&asins=1491965975&linkId=0d4a0adc436d5ff9c348048e9706ab57&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=1491956259&asins=1491956259&linkId=8fae7e7f246f055bb2adf4860a68af32&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=1617294543&asins=1617294543&linkId=0384ce914531a990a8cd6efd6aad361e&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=1491961732&asins=1491961732&linkId=b3dad5276672b1bb31e75c853e3c1c4d&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=1617293377&asins=1617293377&linkId=e8166ba7580e4bc9f32ed856556f29b4&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
