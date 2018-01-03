@@ -1,0 +1,160 @@
+﻿<!-- Microservices: Issues with RDBMS and Strong Data Consistency -->
+<div class="separator" style="clear: both; text-align: center;"><a href="https://1.bp.blogspot.com/-ft7Fv-aL2gw/Wkzyg0stqrI/AAAAAAAADBo/STrthZxei_I3lHJRoooiyo3P6b-WqmkBACPcBGAYYCw/s1600/banner.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://1.bp.blogspot.com/-ft7Fv-aL2gw/Wkzyg0stqrI/AAAAAAAADBo/STrthZxei_I3lHJRoooiyo3P6b-WqmkBACPcBGAYYCw/s1600/banner.png" data-original-width="1600" data-original-height="900" /></a></div>
+<p style="text-align: center;">
+    <i>
+        The goal of this article is to explain the issues associated with the RDBMS (Relational Database Management Systems)
+        and strong data consistency in a microservice ecosystem. This article also serves as a primer for a bunch of articles about
+        microservice arhitectural patterns (CQRS, Event Sourcing, Polyglot Persistence, etc) that I want to share to the .NET community.
+    </i>
+</p>
+<h2>Relational Database Management Systems (RDBMS)</h2>
+<p>
+    Software development often starts with a thorough information gathering. Software developers, business analysts and product owners
+    sit down for long hours inside meeting rooms performing this steps.
+</p>
+<p>
+    After performing some careful analysis on information gathered, traditional development teams jump start application development by designing a relational
+    database schema that would be used to store and organize data that an OLTP application need to present its current state. There are countless reasons
+    (Atomicity, Consistency, Integrity and Durability) why designing a relational database schema is quite popular for small to medium enterprises.
+</p>
+<p>
+    The usage of RDBMS have went well for enterprise systems of the previous computing era (70s, 80s, and 90s), but things changed as the new millennium arrived. The explosion of
+    the Internet's popularity had attracted most of the large companies to start offering online-transaction processing systems to achieve competitive
+    advantages over their competitors.
+</p>
+<p>
+    These large enterprises (Amazon, Facebook, E-Bay, Alibaba, Netflix etc.) had been so successful that they've managed to attract millions of users to visit
+    their web applications causing massive loads of data-related HTTP traffic in their system. In a database administrator's point of view, this meant chaos because a
+    RDBMS is primarily designed to present "Consistent Data".
+</p>
+<h2>Strong Data Consistency</h2>
+<p>
+    Implementing strong data consistency on a relational database is synonymous with implementing different forms of data LOCKING which ensures that
+    every read/pull transaction that would be performed on the database is going to present to consistent state of data to requesting parties.
+</p>
+<p>
+    Data locking strategies were perfectly OK and acceptable for small and medium data management, this story easily flips over for large scale data management. Locking
+    temporarily queues down incoming read/pull data request which easily means reduction in server throughput. For large enterprises like Amazon,
+    a <a href="https://www.fastcompany.com/1825005/how-one-second-could-cost-amazon-16-billion-sales">one second delay in response time meant a whopping 1.6 million US Dollars</a>.
+</p>
+<h2>Let's list the pain points of RDBMS down</h2>
+<ul style="list-style: none;">
+    <li>
+        <h3>Slow bootstrap time</h3>
+        <p>
+            Designing a RDBMS with strong consistency requires upfront analysis to design a schema. For large enterprises,
+            this means losing competitive edge, time is precious!!!
+        </p>
+    </li>
+    <li>
+        <h3>Relational Model Hide Domain Intent</h3>
+        <p>
+            Relational models can hide the domain importance of entities over time. An example of this
+            would be a user in Amazon's domain could mean a Buyer, Receiver or System Administrator. Which
+            adds up to the huge list of maintainability problems facing enterprise software.
+        </p>
+    </li>
+    <li>
+        <h3>Schema Changes are Risky</h3>
+        <p>
+            Making changes on a database currently consumed by multiple live applications is challenging
+            and associated with risk unless a thorough impact analysis is performed.
+        </p>
+    </li>
+    <li>
+        <h3>Locking means low throughput and availability</h3>
+        <p>
+            RDBMS that manages large datasets are prone to locking / contention of database objects.
+        </p>
+    </li>
+    <li>
+        <h3>Geographical replication and dispersal adds to the throughput chaos</h3>
+        <p>
+            Databases that were designed to be hosted on a single location don't work well with geographical dispersal strategies because
+            federated servers often implement quorums to achieve consistency across a geographically dispersed schema.
+        </p>
+    </li>
+    <li>
+        <h3>Management Systems that can disperse geographically are expensive</h3>
+        <p>
+            DBs that can be dispersed geographically with low locking can cost you some serious amount of money. I know banks
+            and Amazon are rich but spending money for unnecessary stuff is not a good idea to make more money.
+        </p>
+    </li>
+</ul>
+<h2>Non-Microservice Related (OFF TOPIC) Issues with RDBMS</h2>
+<ul style="list-style: none;">
+    <li>
+        <h3>Building RDBMS often requires knowledge of SQL.</h3>
+        <p>
+            Not all developers know SQL that well. Most of them can write working queries but
+            are not aware of the intricacies associated with set programming as they were more familiar
+            with nasty exponential looping.
+        </p>
+    </li>
+    <li>
+        <h3>Developers like to program using their domain abstractions</h3>
+        <p>
+            Like what item two states, the majority of developers love working with their
+            domain abstractions (Hello POCO and POJO fans!).
+        </p>
+    </li>
+    <li>
+        <h3>Accessing RDBMS requires knowledge of Object Relational Mappers</h3>
+        <p>
+            Pulling data from a database requires ORMs to transform database layer objects into
+            their domain layer counterparts. There are a lot of ORMs (Dapper, Entity Framework, ADO.net)
+            out there and some of them don't perform well (EF, Ahem!!) on large data sets.
+        </p>
+    </li>
+</ul>
+<h2>CAP Theorem</h2>
+<blockquote>
+    <small>"It is impossible for a distributed data store to simultaneously provide more than two out of the following three guarantees: Consistency. Availability. Partition tolerance."</small>
+</blockquote>
+<h2>So WTH can we do about it?</h2>
+<p>
+    Yes, CAP Theorem stated that it is impossible to achieve Consistency, Availability and Partition Tolerance on a distributed data store, but we can actually bargain
+    for <a href="https://en.wikipedia.org/wiki/Eventual_consistency">"Eventual Consistency"</a> in exchange of high availability and partition tolerance. 
+</p>
+<h2>So how can we implement eventual consistency?</h2>
+<p>
+    Oh well, there are a couple of microservice architectural patterns (
+    <a href="https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing">Event Sourcing</a>,
+    <a href="https://docs.microsoft.com/en-us/azure/architecture/patterns/cqrs">CQRS Pattern</a>,
+    <a href="https://docs.microsoft.com/en-us/azure/architecture/patterns/compensating-transaction">Compensating Transaction</a>,
+    <a href="https://docs.microsoft.com/en-us/azure/architecture/patterns/materialized-view">Materialized Views</a>,
+    <a href="https://martinfowler.com/bliki/BoundedContext.html">Bounded Context</a>,
+    <a href="https://martinfowler.com/bliki/PolyglotPersistence.html">Polyglot Persistence</a>,
+    etc.
+    ) out there that were dedicated for implementing an eventual consistent data strategy.
+    I would do my best to create prototypes and present them on my upcoming articles.
+</p>
+<h2>Conclusion</h2>
+<p>
+    Achieving strong consistency in a distributed system comes with the cost of the application's availability, which is a big "NO, NO, NO Lah" for large
+    enterprises. Easing down to <a href="https://en.wikipedia.org/wiki/Eventual_consistency">"Eventual Consistency"</a> in exchange of high availability 
+    and fault tolerance is the most preferred option because it enables a large scale distributed system to handle massive volumes of data.
+</p>
+<h2>Related Articles</h2>
+<hr />
+<ul style="list-style: none;">
+    <li>
+        <small>
+            <a href="http://pogsdotnet.blogspot.com/2017/11/microservices-picking-net-run-time-for.html">Microservices: Picking the .NET Framework for your containerized applications.</a>
+        </small>
+    </li>
+    <li>
+        <small>
+            <a href="https://pogsdotnet.blogspot.sg/2018/01/microservices-why-choose-containers.html">Microservices: Why choose Containers over Virtual Machines.</a>
+        </small>
+    </li>
+</ul>
+<h2>Why don't you become a Microservice Ninja?</h2>
+<hr />
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=1491950358&asins=1491950358&linkId=c84584aa71b2af294ec75ad9d6bcdcb6&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=1491965975&asins=1491965975&linkId=0d4a0adc436d5ff9c348048e9706ab57&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=1491956259&asins=1491956259&linkId=8fae7e7f246f055bb2adf4860a68af32&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=1617294543&asins=1617294543&linkId=0384ce914531a990a8cd6efd6aad361e&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=1491961732&asins=1491961732&linkId=b3dad5276672b1bb31e75c853e3c1c4d&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=1617293377&asins=1617293377&linkId=e8166ba7580e4bc9f32ed856556f29b4&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
