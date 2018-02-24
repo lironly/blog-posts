@@ -1,0 +1,169 @@
+﻿<!-- Tree Shaking Part 1: Building Lightweight Applications using ASP.net Core, NPM, Webpack and TypeScript-->
+<a href="https://3.bp.blogspot.com/-u6oCTR0VMFk/WpGF3VoseUI/AAAAAAAADCU/vqZtbp4RFkY3ZI7npVc9YKpqU_vZqQ-_gCLcBGAs/s1600/banner.png" imageanchor="1"><img border="0" src="https://3.bp.blogspot.com/-u6oCTR0VMFk/WpGF3VoseUI/AAAAAAAADCU/vqZtbp4RFkY3ZI7npVc9YKpqU_vZqQ-_gCLcBGAs/s640/banner.png" width="640" height="360" data-original-width="1600" data-original-height="900" /></a>
+<p style="text-align: center;">
+    <i>
+        The goal of this article is to demonstrate how to setup an environment that can be used in building lightweight web pages using VS2017, ASP.net Core, NPM, Webpack and TypeScript.
+    </i>
+</p>
+<h2>Context</h2>
+<p>
+    The acceleration rate of the web-development scene has been astonishing in the recent years. Tons of JavaScript frameworks had been introduced
+    to help developers quickly bootstrap projects without the need to re-write commonly performed task like managing the DOM, sending data to server side and etc.
+</p>
+<p>
+    The convenience and accessibility of these JavaScript frameworks lures clueless developers to relentlessly plug tons of frameworks to perform very minor UI related coding which leads
+    to:
+    <ul>
+        <li>Bloated JavaScript Files</li>
+        <li>High HTTP Request Count</li>
+        <li>High percentage of dead-code (unused-code)</li>
+        <li>And ultimately, extremely slow page load times.</li>
+    </ul>
+</p>
+<h2>Detecting and Measuring Dead-Code.</h2>
+<p>
+    In computer programming, dead-code refers to source code that were not utilized but released with the legit and relevant ones. This problem have plagued the web-development
+    scene for a long time and in-fact some of the very popular websites still suffer from it at the moment of this article's writing (Feb 25, 2018). 
+</p>
+<p>
+    The most basic step in any scientific solving is data gathering through the use of measurement tool that will give us relevant metrics. Google Chrome recently introduced a <a href="https://blog.logrocket.com/using-the-chrome-devtools-new-code-coverage-feature-ca96c3dddcaf">code coverage detection feature</a>
+    that helps developers identify and measure dead-code existence on their websites.
+</p>
+<a href="https://4.bp.blogspot.com/-hFdn7kVerRA/WpGKEd6KCbI/AAAAAAAADCw/qJxzH1GLY2QUto_FjgFrrfWv-2B7zqZGQCLcBGAs/s1600/DeadCode%2BInstagram.png" imageanchor="1"><img border="0" src="https://4.bp.blogspot.com/-hFdn7kVerRA/WpGKEd6KCbI/AAAAAAAADCw/qJxzH1GLY2QUto_FjgFrrfWv-2B7zqZGQCLcBGAs/s640/DeadCode%2BInstagram.png" width="640" height="246" data-original-width="1600" data-original-height="616" /></a>
+<p style="text-align: center;">
+    <i>
+        Above is a code coverage assessment of Instagram's JavaScript files. Google Chrome's code coverage component states that 965 KB out of 1.8 MB (55%) of the JavaScript downloaded to
+        the browser were not used which is quite bad for a huge and popular website.
+    </i>
+</p>
+<h2>So how can TypeScript, NPM and Webpack help?</h2>
+<p>
+    Using these stuff can help us utilize <a href="https://medium.com/@netxm/what-is-tree-shaking-de7c6be5cadd">Tree Shaking</a> or dead-code elimination. Tree Shaking is the process of 
+    stripping code that isn't required to run a web-page. Below is short description of the tools that we would use to perform Bundling, Minification and Tree Shaking on JavaScript files.
+</p>
+<ul style="list-style: none;">
+    <li>
+        <h3><a href="https://www.typescriptlang.org">TypeScript</a></h3>
+        <p>
+            TypeScript is a syntactical superset (meaning plain JS works on it) of the JavaScript language that primarily aims to provide static typing through
+            the use of the class and interface keywords. The biggest benefit of it is that it enables IDEs in providing compile time error detection capabilities.
+            Another major benefit of using it is that it enables Tools like Webpack the capability to identify dependency structure of a JavaScript file.
+        </p>
+    </li>
+    <li>
+        <h3><a href="https://webpack.js.org">Webpack</a></h3>
+        <p>
+            Webpack is a front-end resource bundler tool. Together with TypeScript, it gives you the capability to remove dead-code (Unused code) through the use of
+            its <a href="https://webpack.js.org/guides/tree-shaking/">Tree Shaking</a> feature.
+        </p>
+    </li>
+    <li>
+        <h3><a href="https://www.npmjs.com">Node Package Manager (NPM)</a></h3>
+        <p>
+            Node Package Manager (aka NPM), is a package manager for managing JavaScript files and it is the default package manager of NodeJS. It allows you
+            to install, update and remove package (JavaScript files that you depend on). Think of NPM as the NuGet package manager for .Net Applications and the
+            combination of (Ant extended by Maven on Java). We would need NPM to install jQuery, enable TypeScript and bundle our resources using Webpack.
+        </p>
+    </li>
+</ul>
+<h2>Setting up the coding environment</h2>
+<ul style="list-style: none;">
+    <li>
+        <h3>Step 1: Create a new project using ASP.net Core</h3>
+        <p>
+            I would assume that you guys are already aware of how to create MVC applications using ASP.net Core and I won't dive deeper on how to do this.
+        </p>
+    </li>
+    <li>
+        <h3>Step 2: Install Node JS and NPM</h3>
+        <p>
+            Download and install NodeJS by following the <a href="https://nodejs.org/en/download/">guide</a> at its website's setup page. This step would give us the capability to install and use NPM extension of VS2017.
+        </p>
+    </li>
+    <li>
+        <a href="https://3.bp.blogspot.com/-WZzBzDl9NUM/WpGM_yFYYRI/AAAAAAAADDA/SzIglhBmk70llst8EXetvOWoTsHJDQf8QCLcBGAs/s1600/Run%2Bon%2Badmin.png" imageanchor="1"><img border="0" src="https://3.bp.blogspot.com/-WZzBzDl9NUM/WpGM_yFYYRI/AAAAAAAADDA/SzIglhBmk70llst8EXetvOWoTsHJDQf8QCLcBGAs/s1600/Run%2Bon%2Badmin.png" data-original-width="491" data-original-height="316" /></a>
+        <h3>Step 3: Open command-prompt on administrator mode</h3>
+        <p>
+            You can do this by Right-clicking on command prompt app-icon and selecting "Run on administrator" mode.
+        </p>
+    </li>
+    <li>
+        <h3>Step 4: Initialize NPM on your application</h3>
+        <p>
+            You can do this by executing the following command on your web-project's root folder using CMD.
+        </p>
+        <!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;">
+            <pre style="margin: 0; line-height: 125%">npm init <span style="color: #333333">-</span>y
+</pre>
+        </div>
+        <p>
+            This would install all the NPM files on your application's local folder.
+        </p>
+    </li>
+    <li>
+        <h3>Step 5: Downloading the latest NPM.</h3>
+        <p>
+            You will probably run into problems related to the version of your NPM if you already have it prior to this exercise, the command below enables you to download the latest NPM files that could
+            fix issues that might be associated with outdated NPM files.
+        </p>
+        <!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;">
+            <pre style="margin: 0; line-height: 125%">npm install npm<span style="color: #555555; font-weight: bold">@latest</span>
+</pre>
+        </div>
+    </li>
+    <li>
+        <h3>Step 6: Install Webpack</h3>
+        <p>
+            After installing NPM, you have to install Webpack to get access to its bundling and tree shaking capabilities.
+        </p>
+        <!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;">
+            <pre style="margin: 0; line-height: 125%">npm install webpack <span style="color: #333333">--</span>save<span style="color: #333333">-</span>dev
+</pre>
+        </div>
+        <p>
+            The --save-dev option tells NPM to install dependencies on your development environment only. This would prevent the bloating of your wwwroot folder for production builds.
+        </p>
+    </li>
+    <li>
+        <h3>Step 7: Install TypeScript and its <a href="https://github.com/TypeStrong/ts-loader">Webpack loader</a></h3>
+        <p>
+            Installing TypeScript would give us the capability to write TypeScript files (.ts). The TypeScript loader on the other hand would be utilized for
+            transpiling our TypeScript file into raw JavaScript files.
+        </p>
+        <!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;">
+            <pre style="margin: 0; line-height: 125%">npm install <span style="color: #333333">--</span>save<span style="color: #333333">-</span>dev typescript ts<span style="color: #333333">-</span>loader
+</pre>
+        </div>
+    </li>
+    <li>
+        <h3>Step 8: Disable the Native VS TypeScript Compiler</h3>
+        <p>
+            Since we would be using Webpack for transpiling our TypeScript files, we have to disable the native transpilation process provided
+            by Visual Studio 2017. You can do this by manually editing your ASP.net Core's CS project file by adding the code below.
+        </p>
+        <div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;">
+            <pre style="margin: 0; line-height: 125%"><span style="color: #333333">&lt;</span>PropertyGroup<span style="color: #333333">&gt;</span>
+            <span style="color: #333333">&lt;</span><span style="color: #FF0000; background-color: #FFAAAA">!</span><span style="color: #333333">--</span> <span style="color: #333333">...</span> <span style="color: #333333">--&gt;</span>
+            <span style="color: #333333">&lt;</span>TypeScriptCompileBlocked<span style="color: #333333">&gt;</span>true<span style="color: #333333">&lt;/</span>TypeScriptCompileBlocked<span style="color: #333333">&gt;</span>
+<span style="color: #333333">&lt;/</span>PropertyGroup<span style="color: #333333">&gt;</span>
+</pre>
+        </div>
+    </li>
+</ul>
+<h2>Conclusion</h2>
+<p>
+    Utilizing too much JavaScript dependencies could slow down your web page's load time. To reduce the side-effect of having too much dead-code from this frameworks, you could Minify, Bundle and Tree-Shake your JavaScript files
+    with the use of NPM, TypeScript and WebPack. I would be writing the second part of this article that would showcase the advantages and strengths of using the tools mentioned on this article.
+</p>
+<h2>Looking for JavaScript Goodies?</h2>
+<hr />
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=178883075X&asins=178883075X&linkId=de6bbc37a7b0d86184143abbf2192442&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=B07632NGQS&asins=B07632NGQS&linkId=15bc17d7a9e8a098c1a89664efd2b54c&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=B073W1L8YQ&asins=B073W1L8YQ&linkId=05b3b4e29c9ad5f3e500787a732ef567&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=B074BYZ66C&asins=B074BYZ66C&linkId=8ed0575e6b165d564ef2217af7dd13ab&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=9526868803&asins=9526868803&linkId=7db3719deda89a828c91718ea0787e9b&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=B0777VKTCD&asins=B0777VKTCD&linkId=9551c07eb47c5b29129a5a93807dfdfe&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=B075KMZ4MX&asins=B075KMZ4MX&linkId=3a633617c6948d1d432c5718435d926a&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=1491924462&asins=1491924462&linkId=d8ead139fb1e4b3a1122247135c3d01d&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=1593275846&asins=1593275846&linkId=d25296f6df67ac0750e9ac579dfa527e&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=1118531647&asins=1118531647&linkId=35ce6f3fa02ca8a29ad1a137945a1321&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
