@@ -62,8 +62,8 @@
         <h3><a href="https://www.npmjs.com">Node Package Manager (NPM)</a></h3>
         <p>
             Node Package Manager (aka NPM), is a package manager for managing JavaScript files and it is the default package manager of NodeJS. It allows you
-            to install, update and remove package (JavaScript files that you depend on). Think of NPM as the NuGet package manager for .Net Applications and the
-            combination of (Ant extended by Maven on Java). We would need NPM to install jQuery, enable TypeScript and bundle our resources using Webpack.
+            to install, update and remove packages (JavaScript files that you depend on). Think of NPM as the NuGet package manager for .Net Applications and the
+            combination of Ant extended by Maven on Java.
         </p>
     </li>
 </ul>
@@ -77,10 +77,18 @@
                 <li>Click File -> New -> Project -> Web -> ASP.net Core Web Application</li>
                 <li>Select Empty Project</li>
                 <li>
-                    Open StartUp.cs and replace the content of the class with the code below:
-
+                    Open StartUp.cs and replace the content of the class with the code below: <br />
+                    <div style="margin-bottom: 8px;"></div>
+                    <script src="https://gist.github.com/allanchua101/beef82bd6235df2e939b49c3a2e01f8d.js"></script>
+                    <i>The code above would enable MVC routing and usage of static files.</i>
                 </li>
             </ul>
+        </p>
+    </li>
+    <li>
+        <h3>Step 1.1: Close VS2017 after creating the project!!</h3>
+        <p>
+            UPDATE: For some users, NPM does not install properly while VS is currently open. Make sure that there are no process that would prevent CMD from installing script files. #VsSucks.
         </p>
     </li>
     <li>
@@ -101,13 +109,7 @@
         <p>
             You can do this by executing the following command on your web-project's root folder using CMD.
         </p>
-        <!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;">
-            <pre style="margin: 0; line-height: 125%">npm init <span style="color: #333333">-</span>y
-</pre>
-        </div>
-        <p>
-            This would install all the NPM files on your application's local folder.
-        </p>
+        <script src="https://gist.github.com/allanchua101/c49b4adcef2b57740d52a48b58f7d982.js"></script>
     </li>
     <li>
         <h3>Step 5: Downloading the latest NPM.</h3>
@@ -115,21 +117,14 @@
             You will probably run into problems related to the version of your NPM if you already have it prior to this exercise, the command below enables you to download the latest NPM files that could
             fix issues that might be associated with outdated NPM files.
         </p>
-        <!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;">
-            <pre style="margin: 0; line-height: 125%">npm install npm
-npm install npm<span style="color: #555555; font-weight: bold">@latest</span>
-</pre>
-        </div>
+        <script src="https://gist.github.com/allanchua101/51bba6bfd659bd8d8d26e3f93f7fed33.js"></script>
     </li>
     <li>
         <h3>Step 6: Install Webpack</h3>
         <p>
             After installing NPM, you have to install Webpack to get access to its bundling and tree shaking capabilities.
         </p>
-        <!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;">
-            <pre style="margin: 0; line-height: 125%">npm install webpack <span style="color: #333333">--</span>save<span style="color: #333333">-</span>dev
-</pre>
-        </div>
+        <script src="https://gist.github.com/allanchua101/53c5e14f85037394dc414af297d5d9da.js"></script>
         <p>
             The --save-dev option tells NPM to install dependencies on your development environment only. This would prevent the bloating of your wwwroot folder for production builds.
         </p>
@@ -137,13 +132,10 @@ npm install npm<span style="color: #555555; font-weight: bold">@latest</span>
     <li>
         <h3>Step 7: Install TypeScript and its <a href="https://github.com/TypeStrong/ts-loader">Webpack loader</a></h3>
         <p>
-            Installing TypeScript would give us the capability to write TypeScript files (.ts). The TypeScript loader on the other hand would be utilized for
-            transpiling our TypeScript file into raw JavaScript files.
+            Installing TypeScript would give us the capability to write TypeScript files (.ts). The TypeScript loader on the other hand would be used by Webpack
+            on transpiling our TypeScript file into raw JavaScript files.
         </p>
-        <!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;">
-            <pre style="margin: 0; line-height: 125%">npm install <span style="color: #333333">--</span>save<span style="color: #333333">-</span>dev typescript ts<span style="color: #333333">-</span>loader
-</pre>
-        </div>
+        <script src="https://gist.github.com/allanchua101/5a40dd9846eb4fa8def71f7bbf4e95be.js"></script>
     </li>
     <li>
         <h3>Step 8: Disable the Native VS TypeScript Compiler</h3>
@@ -151,14 +143,19 @@ npm install npm<span style="color: #555555; font-weight: bold">@latest</span>
             Since we would be using Webpack for transpiling our TypeScript files, we have to disable the native transpilation process provided
             by Visual Studio 2017. You can do this by manually editing your ASP.net Core's CS project file by adding the code below.
         </p>
-        <!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;">
-<pre style="margin: 0; line-height: 125%"><span style="color: #333333">&lt;</span>PropertyGroup<span style="color: #333333">&gt;</span>
-            <span style="color: #333333">&lt;</span>TypeScriptCompileOnSaveEnabled<span style="color: #333333">&gt;</span><span style="color: #007020">False</span><span style="color: #333333">&lt;/</span>TypeScriptCompileOnSaveEnabled<span style="color: #333333">&gt;</span>
-<span style="color: #333333">&lt;/</span>PropertyGroup<span style="color: #333333">&gt;</span>
-</pre>
-        </div>
+        <script src="https://gist.github.com/allanchua101/3a1157d9af619cc71407dff2d1abc000.js"></script>
     </li>
 </ul>
+<hr />
+<h2>Summary</h2>
+<p>
+    At the end of this article you should have the following: 
+        <ul>
+            <li>An blank ASP.net Core project with MVC and static file support.</li>
+            <li>A package.json file that contains references to NPM, TypeScript, TS-Loader and Webpack.</li>
+        </ul>
+</p>
+<hr />
 <h2>Conclusion</h2>
 <p>
     In this article, we have learned how to setup an ASP.net Core application that can utilize NPM, TypeScript and Webpack as a preparation for the Tree shaking article.
