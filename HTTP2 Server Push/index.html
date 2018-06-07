@@ -24,7 +24,7 @@
 </p>
 <h2>Problem with HTTP 1.1</h2>
 <p>
-    Since the browser requires the initial HTML file for it to completely identify all the assets required to completely render the target website, we can conclude that:
+    Since the browser requires the initial HTML file for it to fully identify all the assets required to completely render the target website, we can conclude that:
 </p>
 <blockquote>The initial HTTP request and parsing of the HTML file blocks the full download of relevant assets.</blockquote>
 <p>
@@ -36,6 +36,13 @@
     <li>Response Weight X Latency X Network Bandwidth</li>
 </ul>
 <p>
-    To make things even worst, just imagine the mentioned pain points being repeated for the next bunch of assets that would be requested after the HTML file is parsed by the browser.
+    To make things even worst, just imagine the mentioned process repeated for the next bunch of assets that would be requested after the HTML file is parsed by the browser.
 </p>
-<h2>Problem with HTTP 1.1</h2>
+<p>PS: The next bunch of assets are capable of generating more HTTP requests (JS and CSS requesting more assets).</p>
+<h2>Server Push to the Rescue</h2>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-1b2XCzGLa3E/WxlhKu7gVeI/AAAAAAAADFg/7nCh0dq-p5YTQgLp50LknFTxqxPEx1sSQCLcBGAs/s1600/HTTP%2B2%2BServer%2BPush.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-1b2XCzGLa3E/WxlhKu7gVeI/AAAAAAAADFg/7nCh0dq-p5YTQgLp50LknFTxqxPEx1sSQCLcBGAs/s1600/HTTP%2B2%2BServer%2BPush.png" data-original-width="1167" data-original-height="654" /></a></div>
+<p>
+    In order to solve the request bottleneck of HTTP 1.1, HTTP 2.0 introduced the concept of <a href="https://en.wikipedia.org/wiki/HTTP/2_Server_Push">Server Push</a>. 
+    Server push is a mechanism that enables web servers to send a browser the information about what static assets it would need to completely render the
+    initially requested resource in a preemptive fashion.
+</p>
