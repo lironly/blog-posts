@@ -1,11 +1,41 @@
-﻿<!DOCTYPE html>
-
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
-
-</body>
-</html>
+﻿<div class="separator" style="clear: both; text-align: center;"><a href="https://2.bp.blogspot.com/-Fo5uKDQO7D4/WxlMRpbs9zI/AAAAAAAADEc/hFhKHCIn36MR-Ixkkdz0UmQ_RSD9stJmACLcBGAs/s1600/banner.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://2.bp.blogspot.com/-Fo5uKDQO7D4/WxlMRpbs9zI/AAAAAAAADEc/hFhKHCIn36MR-Ixkkdz0UmQ_RSD9stJmACLcBGAs/s1600/banner.png" data-original-width="1600" data-original-height="891" /></a></div>
+<p style="text-align: center;">
+    <i>
+        A year ago, I wrote an article explaining the general concept of <a href="https://pogsdotnet.blogspot.com/2017/06/how-http-20-affects-existing-web.html">HTTP 2.0</a> and
+        I'm so glad that we can finally use it on building websites and now supported by major browsers. This article is all about
+        <a href="https://en.wikipedia.org/wiki/HTTP/2">HTTP 2.0</a> + <a href="https://en.wikipedia.org/wiki/HTTP/2_Server_Push">Server Push</a>,
+        from what it is, the problems it solves, how to do it, how to verify that it works and its impact on your website's performance.
+    </i>
+</p>
+<h2>HTTP 1.1</h2>
+<p>
+    In order to explain what HTTP 2.0 server push does, we will have to understand what went wrong from its predecessor (HTTP 1.1).
+    We will be analyzing the intricacies associated with loading assets from an HTTP server.
+</p>
+<p>
+    In order for a browser to load a website, it sends an HTTP request to retrieve the initial HTML file and once the server sends it back,
+    the browser analyzes the HTML and identifies the other resources that needs to be loaded (CSS, JS, Images).
+</p>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-2sF4WSuH9rA/WxlXjAiY_cI/AAAAAAAADFA/Csk97x-_WWMw-24PlRhC8ZfMp4eJt8ZuQCLcBGAs/s1600/http%2B1.1.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-2sF4WSuH9rA/WxlXjAiY_cI/AAAAAAAADFA/Csk97x-_WWMw-24PlRhC8ZfMp4eJt8ZuQCLcBGAs/s1600/http%2B1.1.png" data-original-width="858" data-original-height="493" /></a></div>
+<p style="text-align: center;">
+    <i>
+        The image above shows the process involve in the HTTP 1.1 way of loading a website.
+    </i>
+</p>
+<h2>Problem with HTTP 1.1</h2>
+<p>
+    Since the browser requires the initial HTML file for it to completely identify all the assets required to completely render the target website, we can conclude that:
+</p>
+<blockquote>The initial HTTP request and parsing of the HTML file blocks the full download of relevant assets.</blockquote>
+<p>
+    To make things worst, in order for a browser to send the initial HTTP request for the HTML file it needs to perform the following tasks:
+</p>
+<ul>
+    <li>Resolve the DNS of the domain where the website is hosted.</li>
+    <li>Undergo a full round trip between the web server and client machine to open a TCP socket</li>
+    <li>Response Weight X Latency X Network Bandwidth</li>
+</ul>
+<p>
+    To make things even worst, just imagine the mentioned pain points being repeated for the next bunch of assets that would be requested after the HTML file is parsed by the browser.
+</p>
+<h2>Problem with HTTP 1.1</h2>
