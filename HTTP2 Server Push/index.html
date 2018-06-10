@@ -1,19 +1,19 @@
 ﻿<div class="separator" style="clear: both; text-align: center;"><a href="https://2.bp.blogspot.com/-Fo5uKDQO7D4/WxlMRpbs9zI/AAAAAAAADEc/hFhKHCIn36MR-Ixkkdz0UmQ_RSD9stJmACLcBGAs/s1600/banner.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://2.bp.blogspot.com/-Fo5uKDQO7D4/WxlMRpbs9zI/AAAAAAAADEc/hFhKHCIn36MR-Ixkkdz0UmQ_RSD9stJmACLcBGAs/s1600/banner.png" data-original-width="1600" data-original-height="891" /></a></div>
 <p style="text-align: center;">
     <i>
-        A year ago, I wrote an article explaining the general concept of <a href="https://pogsdotnet.blogspot.com/2017/06/how-http-20-affects-existing-web.html">HTTP 2.0</a> and
-        I'm so glad that we can finally use it on building websites and now supported by major browsers. This article is all about
-        <a href="https://en.wikipedia.org/wiki/HTTP/2">HTTP 2.0</a> + <a href="https://en.wikipedia.org/wiki/HTTP/2_Server_Push">Server Push</a>,
-        from what it is, the problems it solves, how to do it, how to verify that it works and its impact on your website's performance.
+        A year ago, I posted an <a href="https://pogsdotnet.blogspot.com/2017/06/how-http-20-affects-existing-web.html">article</a> explaining the general concept of HTTP 2.0.
+        I'm so glad that we can finally use it for building websites and now supported by major browsers. This article is all about
+        <a href="https://en.wikipedia.org/wiki/HTTP/2">HTTP 2.0</a> - <a href="https://en.wikipedia.org/wiki/HTTP/2_Server_Push">Server Push</a>,
+        from what it is, the problems it solves, how to do it (using Fastify), how to verify that it works and its impact on your website's performance.
     </i>
 </p>
-<h2>HTTP 1.1</h2>
+<h2>Abstract</h2>
 <p>
     In order to explain what HTTP 2.0 server push does, we will have to understand what went wrong from its predecessor (HTTP 1.1).
-    We will be analyzing the intricacies associated with loading assets from an HTTP server.
+    We will analyze the intricacies associated with loading assets from an HTTP server and how it affects the performance of websites.
 </p>
 <p>
-    In order for a browser to load a website, it sends an HTTP request to retrieve the initial HTML file and once the server sends it back,
+    In order for a browser to load a website, it needs to send an HTTP request to retrieve the initial HTML file and once the server sends it back,
     the browser analyzes the HTML and identifies the other resources that needs to be loaded (CSS, JS, Images).
 </p>
 <div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-2sF4WSuH9rA/WxlXjAiY_cI/AAAAAAAADFA/Csk97x-_WWMw-24PlRhC8ZfMp4eJt8ZuQCLcBGAs/s1600/http%2B1.1.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-2sF4WSuH9rA/WxlXjAiY_cI/AAAAAAAADFA/Csk97x-_WWMw-24PlRhC8ZfMp4eJt8ZuQCLcBGAs/s1600/http%2B1.1.png" data-original-width="858" data-original-height="493" /></a></div>
@@ -22,7 +22,7 @@
         The image above shows the process involve in the HTTP 1.1 way of loading a website.
     </i>
 </p>
-<h2>Problem with HTTP 1.1</h2>
+<h2>HTTP 1.1 Issues</h2>
 <p>
     Since the browser requires the initial HTML file for it to fully identify all the assets required to completely render the target website, we can conclude that:
 </p>
@@ -31,18 +31,65 @@
     To make things worst, in order for a browser to send the initial HTTP request for the HTML file it needs to perform the following tasks:
 </p>
 <ul>
-    <li>Resolve the DNS of the domain where the website is hosted.</li>
-    <li>Undergo a full round trip between the web server and client machine to open a TCP socket</li>
-    <li>Response Weight X Latency X Network Bandwidth</li>
+    <li>Resolve the DNS of the domain where the website is hosted. (1 Round-trip with DNS server)</li>
+    <li>Undergo a round trip between the web server and client machine to open a TCP socket.  (Done for each asset)</li>
+    <li>Transfer is subjected to Payload Weight * Latency * Network Bandwidth.</li>
 </ul>
 <p>
-    To make things even worst, just imagine the mentioned process repeated for the next bunch of assets that would be requested after the HTML file is parsed by the browser.
+    What make things even worst is that after the initial HTTP request completes, the browser would have to issue more request for more
+    additional assets depending on the dependency graph (Referenced JS, CSS, IMGs, HTMLs via iFrame) and behavior of the downloaded asset.
+    These subsequent assets all have to undergo the same retrieval process as the initial HTML file thus resulting to exponential performance (N<sup>n</sup>).
 </p>
-<p>PS: The next bunch of assets are capable of generating more HTTP requests (JS and CSS requesting more assets).</p>
-<h2>Server Push to the Rescue</h2>
+<h2>Comparing HTTP 1.1 and 2.0 Download Mechanisms</h2>
+<p>
+    In order to clearly present the problems with the behavior of HTTP 1.1, I created a simple website showing Eiffel tower's photo with three static JS and rubbish CSS files.
+    We would be using this website to perform some observations on the differences between the way how HTTP 1.1 and 2.0 downloads assets from a web server.
+</p>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-1rwYuJctHaA/WxlnBnLriHI/AAAAAAAADFs/Ig9Agxs48Wsh3zJ8rMY3rMmSO43cJbAIQCLcBGAs/s1600/HTTP%2B1.1%2BWebsite.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-1rwYuJctHaA/WxlnBnLriHI/AAAAAAAADFs/Ig9Agxs48Wsh3zJ8rMY3rMmSO43cJbAIQCLcBGAs/s640/HTTP%2B1.1%2BWebsite.png" width="640" height="319" data-original-width="1600" data-original-height="798" /></a></div>
+<p>
+    I have checked-in an HTTP 1.1 and 2.0 version of the test website over a repository in <a href="https://github.com/allanchua101/HTTP-2.0-Server-Push">Github</a>.
+    In order to replicate the test in your machine, you can clone the repository on your local machine and install the NPM dependencies on both folders.
+</p>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-W63lsKQMpag/WxloxcZ9xKI/AAAAAAAADF4/bqZ_rjUOgSYsh0sO56_8jtFCLBzFwzGdQCLcBGAs/s1600/HTTP-server%2Bcommand.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-W63lsKQMpag/WxloxcZ9xKI/AAAAAAAADF4/bqZ_rjUOgSYsh0sO56_8jtFCLBzFwzGdQCLcBGAs/s1600/HTTP-server%2Bcommand.png" data-original-width="349" data-original-height="100" /></a></div>
+<h2>Diagnosing HTTP 1.1 Issues</h2>
+<p>
+    If you have successfully installed the NPM dependencies, please run the demo app using http-server on the HTTP 1.1 folder.
+    Once the server is running, browse <a href="http://localhost:8080">http://localhost:8080</a> on Google Chrome make sure you open 
+    developer tools and navigate to the network tab.
+</p>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-cS2B4aMUzPU/Wxlo1qWpD_I/AAAAAAAADF8/RQOjtcAMZ9g0B8am0PS9ZTUXco9qgy0rwCLcBGAs/s1600/HTTP%2B1.1%2BWaterfall%2BDiagram.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-cS2B4aMUzPU/Wxlo1qWpD_I/AAAAAAAADF8/RQOjtcAMZ9g0B8am0PS9ZTUXco9qgy0rwCLcBGAs/s1600/HTTP%2B1.1%2BWaterfall%2BDiagram.png" data-original-width="1367" data-original-height="263" /></a></div>
+<p>
+    Google Chrome's waterfall diagram contains a list of assets downloaded by the browser to render the website. 
+    Each line in the diagram represents an assets retrieved by the browser. The waterfall bars represents the
+    time that it took for the browser to download the requested resource.
+</p>
+<h3>Things to remember</h3>
+<ul>
+    <li>A longer bar would mean longer time of download</li>
+    <li>The position of the bar (Left to Right) in the diagram represents its position in order of asset download</li>
+    <li>The farther the bar from the left side of the diagram, the more time that the browser used to retrieve the assets</li>
+</ul>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://2.bp.blogspot.com/-x2Dl0twjOAg/WxlrjKh2I2I/AAAAAAAADGM/6RnAL6-gCMQqzcK39m8YIiiI-eAO03RPwCLcBGAs/s1600/Distance.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://2.bp.blogspot.com/-x2Dl0twjOAg/WxlrjKh2I2I/AAAAAAAADGM/6RnAL6-gCMQqzcK39m8YIiiI-eAO03RPwCLcBGAs/s1600/Distance.png" data-original-width="883" data-original-height="263" /></a></div>
+<p>
+    If you pay attention to the diagram, you would notice that there is a single green bar (10 MS) at the start of 
+    the diagram and all the remaining bars are plotted 5 milliseconds after the end of the first one. 
+    The 5 ms GAP between represents the time the remaining assets got blocked because of HTML parsing in the browser. 
+</p>
+<p>
+    The first 15 ms was spent (First Green Bar + Gap between the remaining bars) for retrieving the HTML page and
+    parsing it. This first 15 seconds represents the blockage time that occurs prior to the download of the other 
+    assets and the exact problem why HTTP 2.0 server push was formulated.
+</p>
+<p>
+    PS: Note that the 15 ms latency is too low and this is happening because the web-server lives in my machine. 
+    Latency is expected to be way higher for websites hosted in public servers which even gets
+    worsts when the web-server lives on farther location from where clients tries to access it.
+</p>
+<h2>HTTP 2 Server Push</h2>
 <div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-1b2XCzGLa3E/WxlhKu7gVeI/AAAAAAAADFg/7nCh0dq-p5YTQgLp50LknFTxqxPEx1sSQCLcBGAs/s1600/HTTP%2B2%2BServer%2BPush.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-1b2XCzGLa3E/WxlhKu7gVeI/AAAAAAAADFg/7nCh0dq-p5YTQgLp50LknFTxqxPEx1sSQCLcBGAs/s1600/HTTP%2B2%2BServer%2BPush.png" data-original-width="1167" data-original-height="654" /></a></div>
 <p>
-    In order to solve the request bottleneck of HTTP 1.1, HTTP 2.0 introduced the concept of <a href="https://en.wikipedia.org/wiki/HTTP/2_Server_Push">Server Push</a>. 
+    In order to solve the request bottleneck of HTTP 1.1, HTTP 2.0 introduced the concept of <a href="https://en.wikipedia.org/wiki/HTTP/2_Server_Push">Server Push</a>.
     Server push is a mechanism that enables web servers to send a browser the information about what static assets it would need to completely render the
     initially requested resource in a preemptive fashion.
 </p>
+<h2>HTTP 2.0 Server Push in Action</h2>
