@@ -2,14 +2,14 @@
 <p style="text-align: center;">
     <i>
         A year ago, I posted an <a href="https://pogsdotnet.blogspot.com/2017/06/how-http-20-affects-existing-web.html">article</a> explaining the general concept of HTTP 2.0.
-        I'm so glad that we can finally use it for building websites and now supported by major browsers. This article is all about
+        Today we can finally use it for building websites as it is now supported by major browsers. This article will focus on
         <a href="https://en.wikipedia.org/wiki/HTTP/2">HTTP 2.0</a> - <a href="https://en.wikipedia.org/wiki/HTTP/2_Server_Push">Server Push</a>,
-        from what it is, the problems it solves, how to do it (using Fastify), how to verify that it works and its impact on your website's performance.
+        from what it is, the problems it solves, how to implement it (using commons.host), how to verify that it works and its impact on your website's performance.
     </i>
 </p>
 <h2>Abstract</h2>
 <p>
-    In order to explain what HTTP 2.0 server push does, we will have to understand what went wrong from its predecessor (HTTP 1.1).
+    In order to explain what HTTP 2.0 server push does, we have to understand the problems associated with its predecessor (HTTP 1.1).
     We will analyze the intricacies associated with loading assets from an HTTP server and how it affects the performance of websites.
 </p>
 <p>
@@ -19,12 +19,12 @@
 <div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-2sF4WSuH9rA/WxlXjAiY_cI/AAAAAAAADFA/Csk97x-_WWMw-24PlRhC8ZfMp4eJt8ZuQCLcBGAs/s1600/http%2B1.1.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-2sF4WSuH9rA/WxlXjAiY_cI/AAAAAAAADFA/Csk97x-_WWMw-24PlRhC8ZfMp4eJt8ZuQCLcBGAs/s1600/http%2B1.1.png" data-original-width="858" data-original-height="493" /></a></div>
 <p style="text-align: center;">
     <i>
-        The image above shows the process involve in the HTTP 1.1 way of loading a website.
+        The image above shows the process involve in the approach used by HTTP 1.1 to load a website.
     </i>
 </p>
 <h2>HTTP 1.1 Issues</h2>
 <p>
-    Since the browser requires the initial HTML file for it to fully identify all the assets required to completely render the target website, we can conclude that:
+    Since the browser needs to parse the HTML file for it to fully identify all the assets required to completely render the target website, we can conclude that:
 </p>
 <blockquote>The initial HTTP request and parsing of the HTML file blocks the full download of relevant assets.</blockquote>
 <p>
@@ -32,17 +32,17 @@
 </p>
 <ul>
     <li>Resolve the DNS of the domain where the website is hosted. (1 Round-trip with DNS server)</li>
-    <li>Undergo a round trip between the web server and client machine to open a TCP socket.  (Done for each asset)</li>
+    <li>Undergo a round trip between the web server and client machine to open a TCP socket. (Done for each asset)</li>
     <li>Transfer is subjected to Payload Weight * Latency * Network Bandwidth.</li>
 </ul>
 <p>
     What make things even worst is that after the initial HTTP request completes, the browser would have to issue more request for more
     additional assets depending on the dependency graph (Referenced JS, CSS, IMGs, HTMLs via iFrame) and behavior of the downloaded asset.
-    These subsequent assets all have to undergo the same retrieval process as the initial HTML file thus resulting to exponential performance (N<sup>n</sup>).
+    These subsequent assets all have to undergo the same retrieval process as the initial HTML file thus resulting to exponential performance (N<sup>n</sup>) yields.
 </p>
 <h2>Comparing HTTP 1.1 and 2.0 Download Mechanisms</h2>
 <p>
-    In order to clearly present the problems with the behavior of HTTP 1.1, I created a simple website showing Eiffel tower's photo with three static JS and rubbish CSS files.
+    In order to clearly present the problems with the behavior of HTTP 1.1, I created a simple website showing Eiffel tower's photo with three static JS and CSS files.
     We would be using this website to perform some observations on the differences between the way how HTTP 1.1 and 2.0 downloads assets from a web server.
 </p>
 <div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-1rwYuJctHaA/WxlnBnLriHI/AAAAAAAADFs/Ig9Agxs48Wsh3zJ8rMY3rMmSO43cJbAIQCLcBGAs/s1600/HTTP%2B1.1%2BWebsite.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-1rwYuJctHaA/WxlnBnLriHI/AAAAAAAADFs/Ig9Agxs48Wsh3zJ8rMY3rMmSO43cJbAIQCLcBGAs/s640/HTTP%2B1.1%2BWebsite.png" width="640" height="319" data-original-width="1600" data-original-height="798" /></a></div>
@@ -54,42 +54,120 @@
 <h2>Diagnosing HTTP 1.1 Issues</h2>
 <p>
     If you have successfully installed the NPM dependencies, please run the demo app using http-server on the HTTP 1.1 folder.
-    Once the server is running, browse <a href="http://localhost:8080">http://localhost:8080</a> on Google Chrome make sure you open 
+    Once the server is running, browse <a href="http://localhost:8080">http://localhost:8080</a> on Google Chrome and open
     developer tools and navigate to the network tab.
 </p>
-<div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-cS2B4aMUzPU/Wxlo1qWpD_I/AAAAAAAADF8/RQOjtcAMZ9g0B8am0PS9ZTUXco9qgy0rwCLcBGAs/s1600/HTTP%2B1.1%2BWaterfall%2BDiagram.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-cS2B4aMUzPU/Wxlo1qWpD_I/AAAAAAAADF8/RQOjtcAMZ9g0B8am0PS9ZTUXco9qgy0rwCLcBGAs/s1600/HTTP%2B1.1%2BWaterfall%2BDiagram.png" data-original-width="1367" data-original-height="263" /></a></div>
-<p>
-    Google Chrome's waterfall diagram contains a list of assets downloaded by the browser to render the website. 
-    Each line in the diagram represents an assets retrieved by the browser. The waterfall bars represents the
-    time that it took for the browser to download the requested resource.
+
+
+
+<p style="text-align: center;">
+    <i>
+        <a href="https://developers.google.com/web/tools/chrome-devtools/network-performance/resource-loading">Google Chrome's network waterfall</a> diagram is used for
+        diagnosing behavior associated with the loading of a web page. It presents a list of assets retrieved by
+        the browser from web servers to render a web page. Each line in the diagram represents an asset retrieved by
+        the browser. The waterfall bars on the right represents the time that the browser waited for the
+        requested asset to be downloaded.
+    </i>
 </p>
-<h3>Things to remember</h3>
+<h3>Key Points</h3>
 <ul>
-    <li>A longer bar would mean longer time of download</li>
-    <li>The position of the bar (Left to Right) in the diagram represents its position in order of asset download</li>
-    <li>The farther the bar from the left side of the diagram, the more time that the browser used to retrieve the assets</li>
+    <li>A longer bar in the diagram signals a longer download time.</li>
+    <li>The position of the bar (Left to Right) in the diagram represents its position in the asset download sequence (Subjected to sorting of the list).</li>
+    <li>The empty space from the left side of each waterfall bar represents the asset is in stalled mode.</li>
 </ul>
-<div class="separator" style="clear: both; text-align: center;"><a href="https://2.bp.blogspot.com/-x2Dl0twjOAg/WxlrjKh2I2I/AAAAAAAADGM/6RnAL6-gCMQqzcK39m8YIiiI-eAO03RPwCLcBGAs/s1600/Distance.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://2.bp.blogspot.com/-x2Dl0twjOAg/WxlrjKh2I2I/AAAAAAAADGM/6RnAL6-gCMQqzcK39m8YIiiI-eAO03RPwCLcBGAs/s1600/Distance.png" data-original-width="883" data-original-height="263" /></a></div>
+<h3>HTTP 1.1 Analysis</h3>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-u3VHRvNNTfk/Wzy6UR3xKYI/AAAAAAAADHM/kw_gdjokAskC2UBIpNHdzhXI29779OOowCLcBGAs/s1600/HTTP%2B1.1%2BWaterfall%2BBars.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-u3VHRvNNTfk/Wzy6UR3xKYI/AAAAAAAADHM/kw_gdjokAskC2UBIpNHdzhXI29779OOowCLcBGAs/s640/HTTP%2B1.1%2BWaterfall%2BBars.png" width="640" height="378" data-original-width="882" data-original-height="521" /></a></div>
 <p>
-    If you pay attention to the diagram, you would notice that there is a single green bar (10 MS) at the start of 
-    the diagram and all the remaining bars are plotted 5 milliseconds after the end of the first one. 
-    The 5 ms GAP between represents the time the remaining assets got blocked because of HTML parsing in the browser. 
+    If you pay attention to the diagram, you would notice that there is a single green bar at the start of
+    the diagram and all the remaining bars are plotted after the end of the first one.
+    The GAP between represents the time the remaining assets were stalled due to parsing of HTML downloaded HTML file.
 </p>
 <p>
-    The first 15 ms was spent (First Green Bar + Gap between the remaining bars) for retrieving the HTML page and
-    parsing it. This first 15 seconds represents the blockage time that occurs prior to the download of the other 
-    assets and the exact problem why HTTP 2.0 server push was formulated.
+    The scenario above happens because of the browser's failure to detect the dependencies until it parses the initial
+    HTML and the exact problem why HTTP 2.0 server push was formulated.
 </p>
 <p>
-    PS: Note that the 15 ms latency is too low and this is happening because the web-server lives in my machine. 
-    Latency is expected to be way higher for websites hosted in public servers which even gets
-    worsts when the web-server lives on farther location from where clients tries to access it.
+    PS: Please note that the diagram above does not reflect latency factor because the website is hosted on my machine. Do expect a
+    inferior performance on websites hosted on remote web servers.
 </p>
 <h2>HTTP 2 Server Push</h2>
-<div class="separator" style="clear: both; text-align: center;"><a href="https://4.bp.blogspot.com/-1b2XCzGLa3E/WxlhKu7gVeI/AAAAAAAADFg/7nCh0dq-p5YTQgLp50LknFTxqxPEx1sSQCLcBGAs/s1600/HTTP%2B2%2BServer%2BPush.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://4.bp.blogspot.com/-1b2XCzGLa3E/WxlhKu7gVeI/AAAAAAAADFg/7nCh0dq-p5YTQgLp50LknFTxqxPEx1sSQCLcBGAs/s1600/HTTP%2B2%2BServer%2BPush.png" data-original-width="1167" data-original-height="654" /></a></div>
 <p>
-    In order to solve the request bottleneck of HTTP 1.1, HTTP 2.0 introduced the concept of <a href="https://en.wikipedia.org/wiki/HTTP/2_Server_Push">Server Push</a>.
-    Server push is a mechanism that enables web servers to send a browser the information about what static assets it would need to completely render the
-    initially requested resource in a preemptive fashion.
+    In order to solve the browser's incapacity to quickly detect web page dependencies, HTTP 2.0 introduced the concept of <a href="https://en.wikipedia.org/wiki/HTTP/2_Server_Push">Server Push</a>.
+    Server push is a mechanism that enables web servers to send browsers the information about what assets they need to completely render a web page.
 </p>
-<h2>HTTP 2.0 Server Push in Action</h2>
+<h3>Testing HTTP 2.0</h3>
+<p>
+    In order to present the advantages of HTTP 2.0, I will be utilizing <a href="https://gitlab.com/commonshost/server">Commons Host Server NPM package </a>used for
+    hosting web pages on HTTP 2.0 built by <a href="https://commons.host">Commons Host</a>. If you want to perform an identical test on your machine, You can download
+    or clone the source code from <a href="https://github.com/allanchua101/http2-server-push/tree/master/http-2.0">Github</a>.
+</p>
+<h3>Pre-requisites</h3>
+<p>
+    In order for you to run the code from the repository above, you would need the following:
+</p>
+<ul>
+    <li>NodeJS 10+ Installed</li>
+    <li>NPM</li>
+    <li>Google Chrome.</li>
+</ul>
+<p>
+    After downloading the HTTP 2.0 folder from the <a href="https://github.com/allanchua101/http2-server-push/tree/master/http-2.0">Github repository</a>, you can use the following command to run the web server.
+</p>
+<script src="https://gist.github.com/allanchua101/c49e9a6e98509ef9c86afb7957ac1508.js"></script>
+<p>
+    After running the script above on your terminal, navigate to <a href="https://localhost:4443">https://localhost:4443</a>. <i>NOTE: HTTP 2.0 enforces accessing websites via HTTPS protocol.</i>
+</p>
+<h3>Analyzing HTTP 2.0 Server Push</h3>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-3aEe7lYcuog/WzzAhxjIw5I/AAAAAAAADHo/6QNVo0WG2GsMlnFWRgeeHtGqm0jXfRN3gCLcBGAs/s1600/HTTP%2B2.0%2BBars%2BCloseup.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-3aEe7lYcuog/WzzAhxjIw5I/AAAAAAAADHo/6QNVo0WG2GsMlnFWRgeeHtGqm0jXfRN3gCLcBGAs/s1600/HTTP%2B2.0%2BBars%2BCloseup.png" data-original-width="587" data-original-height="372" /></a></div>
+<p style="text-align: center;">
+    <i>
+        HTTP 2.0 waterfall diagram of the Paris website.
+    </i>
+</p>
+<p>
+    The waterfall diagram for the HTTP 2.0 web page reveals that the web page's dependencies were downloaded before the end of the
+    initial HTML file's ended. This signifies the elimination of the stalling time wasted for downloading and parsing the initial HTML from HTTP 1.0.
+</p>
+<h3>What does the translucent blue bar mean?</h3>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-wj2D9eUGpe0/WzzDpwy9Q3I/AAAAAAAADH8/nN7NHsNOYBsH6fk1g7JoXpVBfQrGVxvlgCPcBGAYYCw/s1600/Translucent%2BBars.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-wj2D9eUGpe0/WzzDpwy9Q3I/AAAAAAAADH8/nN7NHsNOYBsH6fk1g7JoXpVBfQrGVxvlgCPcBGAYYCw/s200/Translucent%2BBars.png" width="186" height="200" data-original-width="284" data-original-height="306" /></a></div>
+<p>
+    The translucent bars in the waterfall diagram signifies the push receive time. This bars are present because the web server pre-emptively pushed the
+    web assets (dependencies) together with the initial HTML file to the browser's cache storage.
+</p>
+<h3>How about the solid blue bars?</h3>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-9KIFGJaDD5U/WzzD-YMez_I/AAAAAAAADIA/pO0piejUjXwsRg7Db4z8USjlSxlH5ZKIACLcBGAs/s1600/Solid%2BBars.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-9KIFGJaDD5U/WzzD-YMez_I/AAAAAAAADIA/pO0piejUjXwsRg7Db4z8USjlSxlH5ZKIACLcBGAs/s200/Solid%2BBars.png" width="150" height="200" data-original-width="229" data-original-height="306" /></a></div>
+<p>
+    The solid blue bars represent the push read time. This bars represent the act of retrieval of the web assets stored in the cache of the browser.
+    Since the dependencies are pushed pre-emptively, browsers don't have to open TCP connections to retrieve the asset from the remote server.
+</p>
+<h2>How did the magic happened?</h2>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-yLKvQDMRYU0/WzzErUI8dXI/AAAAAAAADIQ/o7Nm_f4O0gstwdJh2rGINdS380BbzUnKACLcBGAs/s1600/Manifest.png" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-yLKvQDMRYU0/WzzErUI8dXI/AAAAAAAADIQ/o7Nm_f4O0gstwdJh2rGINdS380BbzUnKACLcBGAs/s320/Manifest.png" width="247" height="320" data-original-width="236" data-original-height="306" /></a></div>
+<p>
+    Thanks to Commons Host, I was able to setup a manifest file that tells the server to pre-emptively push the dependencies of the index.html file on the web browser. You can read more
+    about how to do it on <a href="https://gitlab.com/commonshost/server">Commons Host Gitlab Page</a>.
+</p>
+<h2>Conclusion</h2>
+<p>
+    HTTP 2.0 Server Push eliminates the time wasted by HTTP 1.1 clients on waiting and parsing of the initial HTML file to download all the web page's dependencies.
+</p>
+<h2>Please Support HTTP 2.0 Initiative</h2>
+<p>
+    My friends and I are currently looking for developers that are willing to volunteer to help in the development of web servers that are capable of HTTP 2.0 server push.
+    This initiative aims to eliminate the need to write manifest files and fully implement server push on protocol level. Anybody interested in helping our noble initiative
+    can contribute in the following ways:
+</p>
+<ul>
+    <li>Help us write code!</li>
+    <li>Hosting a kick-ass POP server on your house!</li>
+</ul>
+<div class="separator" style="clear: both; text-align: center;"><a href="https://3.bp.blogspot.com/-V3u-83w4UpU/WzzHrRk89BI/AAAAAAAADIc/XKrAFdJ6egwWht_UF4j2BkzFCh7tALQcwCLcBGAs/s1600/34773291_10212455721967705_5793578494784962560_n.jpg" imageanchor="1" style="margin-left: 1em; margin-right: 1em;"><img border="0" src="https://3.bp.blogspot.com/-V3u-83w4UpU/WzzHrRk89BI/AAAAAAAADIc/XKrAFdJ6egwWht_UF4j2BkzFCh7tALQcwCLcBGAs/s400/34773291_10212455721967705_5793578494784962560_n.jpg" width="400" height="300" data-original-width="960" data-original-height="720" /></a></div>
+<p>
+    Feel free to contact <a href="https://github.com/sebdeckers?tab=followers">Sebastian Deckers </a>to know how can you contribute to HTTP 2.0 server push initiative!
+</p>
+<hr />
+<h2>Why don't you become a web performance specialist?</h2>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=1491962445&asins=1491962445&linkId=c14901fa2221a88da61f9b5228d8d536&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=1617295167&asins=1617295167&linkId=cde3a4d81aec215828bb9f0489417e99&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=1617293776&asins=1617293776&linkId=618c6bf158777f2c49f8379b4ae084dd&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=1449344763&asins=1449344763&linkId=edfe5e7936d065a8f4640b8b09a2b14a&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
+<iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ac&ref=tf_til&ad_type=product_link&tracking_id=pogsdotnet-20&marketplace=amazon&region=US&placement=B078MNXC78&asins=B078MNXC78&linkId=7e4f0556b58b7a1b2cb7ca4a54328683&show_border=false&link_opens_in_new_window=false&price_color=333333&title_color=0066c0&bg_color=ffffff"></iframe>
